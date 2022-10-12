@@ -14,7 +14,7 @@ object json {
 
   // @TODO use json-schema-validator lib
   case class JsonSchemaSpec(
-      spec: String
+      value: String
   ) extends SchemaSpec
 
   case class JsonDocument(value: JSON) extends Document[JSON]

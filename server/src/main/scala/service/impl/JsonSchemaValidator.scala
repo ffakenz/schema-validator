@@ -7,6 +7,8 @@ import zio.ZLayer
 import JsonSchemaValidator.Z
 import model.domain
 import service.SchemaValidator
+import infra.impl.JsonValidorClient
+import com.github.fge.jsonschema.main.JsonValidator
 
 // @TODO use json-schema-validator lib
 case class JsonSchemaValidator() extends SchemaValidator[JSON, Z] {
@@ -15,16 +17,15 @@ case class JsonSchemaValidator() extends SchemaValidator[JSON, Z] {
       document: Document[JSON],
       schema: Schema[JSON]
   ): Z[Either[String, Unit]] =
-    if (document.value == "json")
-      ZIO.succeed(Right())
-    else
-      ZIO.succeed(Left("error"))
+    ZIO.serviceWithZIO[JsonValidorClient] { validator =>
+      validator.validate("schema.spec", null, true)
+    }
 }
 
 object JsonSchemaValidator {
-  type Z[A] = ZIO[Any, Throwable, A]
+  type Z[A] = ZIO[JsonValidator with JsonValidorClient, Throwable, A]
 
-  val layer: ZLayer[Any, Nothing, JsonSchemaValidator] =
+  val layer: ZLayer[JsonValidorClient, Nothing, JsonSchemaValidator] =
     ZLayer {
       ZIO.succeed(JsonSchemaValidator())
     }

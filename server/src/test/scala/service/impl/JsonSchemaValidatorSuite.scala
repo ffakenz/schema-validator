@@ -8,6 +8,7 @@ import zio.ZEnvironment
 import model.domain._
 import zio.UIO
 import service.impl.JsonSchemaValidator
+import infra.Layers
 
 object JsonSchemaValidatorSuite {
 
@@ -15,7 +16,11 @@ object JsonSchemaValidatorSuite {
     suite("JSON Suite")(
       testSuccess,
       testFailure
-    ).provide(JsonSchemaValidator.layer)
+    ).provide(
+      Layers.jsonValidator,
+      Layers.jsonValidatorClient,
+      JsonSchemaValidator.layer
+    )
 
   def testSuccess =
     test("validate success") {
