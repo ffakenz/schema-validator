@@ -25,8 +25,9 @@ object JsonSchemaValidatorSuite {
 
   def testSuccess =
     test("validate success") {
+      val spec = JacksonUtils.nodeFactory().objectNode()
       val jsonSchema =
-        JsonSchema(uri = SchemaId("schema-1"), spec = JsonSchemaSpec("spec-1"))
+        JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 
       val json         = JacksonUtils.nodeFactory().objectNode()
       val jsonDocument = JsonDocument(json)
@@ -40,8 +41,9 @@ object JsonSchemaValidatorSuite {
 
   def testFailure =
     test("validate failure") {
+      val spec = JacksonUtils.nodeFactory().objectNode()
       val jsonSchema =
-        JsonSchema(uri = SchemaId("schema-1"), spec = JsonSchemaSpec("spec-1"))
+        JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 
       val json         = JacksonUtils.nodeFactory().objectNode()
       val jsonDocument = JsonDocument(json)

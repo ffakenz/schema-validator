@@ -7,6 +7,7 @@ import zio.ZLayer
 import zio.ZEnvironment
 import model.domain._
 import zio.UIO
+import com.github.fge.jackson.JacksonUtils
 
 object JsonSchemaRegistrySuite {
 
@@ -31,8 +32,9 @@ object JsonSchemaRegistrySuite {
 
   def testUploadSchema =
     test("upload and downlaod schema") {
+      val spec = JacksonUtils.nodeFactory().objectNode()
       val expectedSchema =
-        JsonSchema(uri = SchemaId("schema-1"), spec = JsonSchemaSpec("spec-1"))
+        JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 
       ZIO.serviceWithZIO[JsonSchemaRegistry] { registry =>
         for {
@@ -44,11 +46,12 @@ object JsonSchemaRegistrySuite {
 
   def testShouldOverrideExisting =
     test("upload and override existing schema") {
+      val spec = JacksonUtils.nodeFactory().objectNode()
       val original =
-        JsonSchema(uri = SchemaId("schema-1"), spec = JsonSchemaSpec("spec-1"))
+        JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 
       val expected =
-        original.copy(spec = JsonSchemaSpec("spec-2"))
+        original.copy(spec = spec) // @TODO modify spec
 
       ZIO.serviceWithZIO[JsonSchemaRegistry] { registry =>
         for {

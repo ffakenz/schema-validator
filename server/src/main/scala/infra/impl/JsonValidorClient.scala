@@ -17,15 +17,14 @@ import scala.jdk.CollectionConverters._
 case class JsonValidorClient() {
 
   def validate(
-      schemaJsonString: String,
+      schema: JsonNode,
       instance: JsonNode,
       deepCheck: Boolean = true
   ): Z[Either[String, Unit]] =
     ZIO.serviceWithZIO[JsonValidator] { validator =>
       ZIO.succeed(
         Try {
-          val jsonSchema   = JsonLoader.fromString(schemaJsonString)
-          val resultReport = validator.validate(jsonSchema, instance, deepCheck)
+          val resultReport = validator.validate(schema, instance, deepCheck)
           resultReport
         }.toEither.left
           .map(throwable => throwable.getMessage())

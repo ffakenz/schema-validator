@@ -12,12 +12,7 @@ object json {
       schemaURI: String
   ) extends URI
 
-  // @TODO use json-schema-validator lib
-  case class JsonSchemaSpec(
-      value: String
-  ) extends SchemaSpec
-
   case class JsonDocument(value: JSON) extends Document[JSON]
 
-  case class JsonSchema(uri: SchemaId, spec: JsonSchemaSpec) extends Schema[JSON]
+  case class JsonSchema(uri: SchemaId, spec: JSON) extends Schema[JSON]
 }
