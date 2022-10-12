@@ -2,13 +2,14 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val zio        = "2.0.2"
-    val zioActors  = "0.1.0"
-    val zioTest    = "2.0.0"
-    val zioConfig  = "2.0.9"
-    val zioLogging = "2.1.2"
-    val zioJson    = "0.3.0"
-    val zioHttp    = "2.0.0-RC11"
+    val zio                 = "2.0.2"
+    val zioActors           = "0.1.0"
+    val zioTest             = "2.0.0"
+    val zioConfig           = "2.0.9"
+    val zioLogging          = "2.1.2"
+    val zioJson             = "0.3.0"
+    val zioHttp             = "2.0.0-RC11"
+    val jsonSchemaValidator = "2.2.14"
   }
 
   object Zio {
@@ -30,6 +31,14 @@ object Dependencies {
       zioLoggingSlf4j,
       zioJson,
       zioHttp
+    )
+  }
+
+  object JsonSchemaValidator {
+    val jsonSchemaValidator = "com.github.java-json-tools" % "json-schema-validator" % Versions.jsonSchemaValidator
+
+    val all = Seq(
+      jsonSchemaValidator
     )
   }
 }

@@ -29,7 +29,8 @@ lazy val server = project
   .settings(commonSettings, scalafixSettings)
   .settings(
     libraryDependencies ++= Seq(
-      Dependencies.Zio.all
+      Dependencies.Zio.all,
+      Dependencies.JsonSchemaValidator.all
     ).flatten
   )
   .enablePlugins(ScalafixPlugin, BuildInfoPlugin)
