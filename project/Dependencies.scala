@@ -15,6 +15,8 @@ object Dependencies {
   object Zio {
     val zio             = "dev.zio" %% "zio"                 % Versions.zio
     val zioTest         = "dev.zio" %% "zio-test"            % Versions.zioTest % Test
+    val zioTestSbt      = "dev.zio" %% "zio-test-sbt"        % Versions.zioTest % Test
+    val zioTestMagnolia = "dev.zio" %% "zio-test-magnolia"   % Versions.zioTest % Test
     val zioConfig       = "dev.zio" %% "zio-config"          % Versions.zioConfig
     val zioTypesafe     = "dev.zio" %% "zio-config-typesafe" % Versions.zioConfig
     val zioLogging      = "dev.zio" %% "zio-logging"         % Versions.zioLogging
@@ -25,6 +27,8 @@ object Dependencies {
     val all = Seq(
       zio,
       zioTest,
+      zioTestSbt,
+      zioTestMagnolia,
       zioConfig,
       zioTypesafe,
       zioLogging,

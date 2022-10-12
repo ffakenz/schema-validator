@@ -19,7 +19,7 @@ lazy val api = project
   .settings(
     name := "api"
   )
-  .settings(commonSettings, scalafixSettings)
+  .settings(scalafixSettings)
   .enablePlugins(ScalafixPlugin, BuildInfoPlugin)
 
 lazy val server = project
@@ -28,10 +28,7 @@ lazy val server = project
   )
   .settings(commonSettings, scalafixSettings)
   .settings(
-    libraryDependencies ++= Seq(
-      Dependencies.Zio.all,
-      Dependencies.JsonSchemaValidator.all
-    ).flatten
+    libraryDependencies ++= Dependencies.JsonSchemaValidator.all
   )
   .enablePlugins(ScalafixPlugin, BuildInfoPlugin)
   .dependsOn(api)
