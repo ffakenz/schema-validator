@@ -43,7 +43,7 @@ case class JacksonValidorClient() {
                   .map { msg =>
                     handleException(msg.asException())
                   }
-                  .mkString(",")
+                  .mkString(",") // @REVIEW(SN)
               )
           }
       )
@@ -52,13 +52,13 @@ case class JacksonValidorClient() {
   private def handleException(ex: ProcessingException): String = {
     handleSyntaxError(ex)
       .orElse(handleFatalError(ex))
-      .getOrElse(ex.getMessage())
+      .getOrElse(ex.getMessage()) // @REVIEW(SN)
   }
 
   private def handleFatalError(ex: ProcessingException): Option[String] = {
     /* the error message is a multi-line text
     where each line has a key and a value.
-    here we are only inte cleaning the error message to extract the valid json. */
+    here we are cleaning the error message to extract a the fatal error msg. */
     ex
       .getMessage()
       .split("\n")
@@ -66,25 +66,26 @@ case class JacksonValidorClient() {
       .map(_.replace("fatal: ", ""))
   }
 
-  private def handleSyntaxError(ex: ProcessingException): Option[String] = Try {
-    /* the error message is a multi-line text
+  private def handleSyntaxError(ex: ProcessingException): Option[String] =
+    Try {
+      /* the error message is a multi-line text
     that contiains a valid json between a header and a footer.
     here we are cleaning the error message to extract the valid json. */
-    val str = ex
-      .getMessage()
-      .split("\n")
-      .drop(2)      // drop header
-      .dropRight(1) // drop footer
-      .mkString
+      val str = ex
+        .getMessage()
+        .split("\n")
+        .drop(2)      // drop header
+        .dropRight(1) // drop footer
+        .mkString
 
-    JacksonUtils
-      .getReader()
-      .readTree(str)
-      .asScala
-      .map(json => json.at("/message").asText())
-      .mkString
+      JacksonUtils
+        .getReader()
+        .readTree(str)
+        .asScala
+        .map(json => json.at("/message").asText())
+        .mkString
 
-  }.toOption
+    }.toOption
 }
 
 object JacksonValidorClient {
