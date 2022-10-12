@@ -3,6 +3,7 @@ package service.impl
 import zio.ZIO
 import zio.test.{ test, _ }
 import model.json.{ JsonDocument }
+import com.github.fge.jackson.JacksonUtils
 
 object JsonDocumentCleanerSuite {
 
@@ -14,7 +15,8 @@ object JsonDocumentCleanerSuite {
   def testCleanDocumentIdempotent =
     test("clean document without nothing to clean") {
 
-      val jsonDocument = JsonDocument("json")
+      val json         = JacksonUtils.nodeFactory().objectNode()
+      val jsonDocument = JsonDocument(json)
 
       ZIO.serviceWithZIO[JsonDocumentCleaner] { cleaner =>
         for {

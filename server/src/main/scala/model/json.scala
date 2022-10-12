@@ -1,11 +1,11 @@
 package model
 
 import domain._
+import com.fasterxml.jackson.databind.JsonNode
 
 object json {
 
-  // @TODO use zio-json
-  type JSON = String
+  type JSON = JsonNode
 
   // @TODO use URI
   case class SchemaId(

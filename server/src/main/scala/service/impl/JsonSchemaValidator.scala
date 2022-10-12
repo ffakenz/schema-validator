@@ -18,7 +18,7 @@ case class JsonSchemaValidator() extends SchemaValidator[JSON, Z] {
       schema: Schema[JSON]
   ): Z[Either[String, Unit]] =
     ZIO.serviceWithZIO[JsonValidorClient] { validator =>
-      validator.validate("schema.spec", null, true)
+      validator.validate("schema.spec", document.value, true)
     }
 }
 

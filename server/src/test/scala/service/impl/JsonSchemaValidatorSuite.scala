@@ -9,6 +9,7 @@ import model.domain._
 import zio.UIO
 import service.impl.JsonSchemaValidator
 import infra.Layers
+import com.github.fge.jackson.JacksonUtils
 
 object JsonSchemaValidatorSuite {
 
@@ -27,8 +28,8 @@ object JsonSchemaValidatorSuite {
       val jsonSchema =
         JsonSchema(uri = SchemaId("schema-1"), spec = JsonSchemaSpec("spec-1"))
 
-      val jsonDocument =
-        JsonDocument("json")
+      val json         = JacksonUtils.nodeFactory().objectNode()
+      val jsonDocument = JsonDocument(json)
 
       ZIO.serviceWithZIO[JsonSchemaValidator] { validator =>
         for {
@@ -42,8 +43,8 @@ object JsonSchemaValidatorSuite {
       val jsonSchema =
         JsonSchema(uri = SchemaId("schema-1"), spec = JsonSchemaSpec("spec-1"))
 
-      val jsonDocument =
-        JsonDocument("spec-2")
+      val json         = JacksonUtils.nodeFactory().objectNode()
+      val jsonDocument = JsonDocument(json)
 
       ZIO.serviceWithZIO[JsonSchemaValidator] { validator =>
         for {
