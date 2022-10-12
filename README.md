@@ -1,4 +1,6 @@
 # Schema Validor
+[![ZIO][Badge-ZIO]][Link-Zio]
+[![CI][Badge-CI]][Link-CI]
 
 |Technology   | Version
 |-------------|---------- |
@@ -18,3 +20,8 @@ and launch:
 $ cd scripts/githooks
 $ pre-commit install
 ```
+
+[Badge-ZIO]: https://img.shields.io/badge/zio-2.0-red
+[Link-ZIO]: https://zio.dev/
+[Badge-CI]: https://github.com/ffakenz/schema-validator/actions/workflows/ci.yml/badge.svg
+[Link-CI]: https://github.com/ffakenz/schema-validator/actions/workflows/ci.yml
