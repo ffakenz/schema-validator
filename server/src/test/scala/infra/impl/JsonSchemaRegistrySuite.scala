@@ -32,7 +32,7 @@ object JsonSchemaRegistrySuite {
 
   def testUploadSchema =
     test("upload and downlaod schema") {
-      val spec = JacksonUtils.nodeFactory().objectNode()
+      val spec = JacksonUtils.getReader().readTree("{}")
       val expectedSchema =
         JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 
@@ -46,7 +46,7 @@ object JsonSchemaRegistrySuite {
 
   def testShouldOverrideExisting =
     test("upload and override existing schema") {
-      val spec = JacksonUtils.nodeFactory().objectNode()
+      val spec = JacksonUtils.getReader().readTree("{}")
       val original =
         JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 

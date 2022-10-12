@@ -25,11 +25,11 @@ object JsonSchemaValidatorSuite {
 
   def testSuccess =
     test("validate success") {
-      val spec = JacksonUtils.nodeFactory().objectNode()
+      val spec = JacksonUtils.getReader().readTree("{}")
       val jsonSchema =
         JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 
-      val json         = JacksonUtils.nodeFactory().objectNode()
+      val json         = JacksonUtils.getReader().readTree("{}")
       val jsonDocument = JsonDocument(json)
 
       ZIO.serviceWithZIO[JsonSchemaValidator] { validator =>
@@ -41,11 +41,11 @@ object JsonSchemaValidatorSuite {
 
   def testFailure =
     test("validate failure") {
-      val spec = JacksonUtils.nodeFactory().arrayNode()
+      val spec = JacksonUtils.getReader().readTree("[]")
       val jsonSchema =
         JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 
-      val json         = JacksonUtils.nodeFactory().objectNode()
+      val json         = JacksonUtils.getReader().readTree("{}")
       val jsonDocument = JsonDocument(json)
 
       ZIO.serviceWithZIO[JsonSchemaValidator] { validator =>

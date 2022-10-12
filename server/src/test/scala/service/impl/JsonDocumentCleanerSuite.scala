@@ -15,7 +15,7 @@ object JsonDocumentCleanerSuite {
   def testCleanDocumentIdempotent =
     test("clean document without nothing to clean") {
 
-      val json         = JacksonUtils.nodeFactory().objectNode()
+      val json         = JacksonUtils.getReader().readTree("{}")
       val jsonDocument = JsonDocument(json)
 
       ZIO.serviceWithZIO[JsonDocumentCleaner] { cleaner =>
