@@ -10,6 +10,8 @@ import zio.UIO
 import service.impl.JsonSchemaValidator
 import infra.Layers
 import com.github.fge.jackson.JacksonUtils
+import java.io.IOException
+import scala.io.Source
 
 object JsonSchemaValidatorSuite {
 
@@ -25,34 +27,54 @@ object JsonSchemaValidatorSuite {
 
   def testSuccess =
     test("validate success") {
-      val spec = JacksonUtils.getReader().readTree("{}")
-      val jsonSchema =
-        JsonSchema(uri = SchemaId("schema-1"), spec = spec)
-
-      val json         = JacksonUtils.getReader().readTree("{}")
-      val jsonDocument = JsonDocument(json)
+      val json = JacksonUtils
+        .getReader()
+        .readTree("""
+          |{
+          |  "source": "/home/alice/image.iso",
+          |  "destination": "/mnt/storage",
+          |  "chunks": {
+          |    "size": 1024
+          |  }
+          |}
+        """.stripMargin)
+      val doc = JsonDocument(json)
 
       ZIO.serviceWithZIO[JsonSchemaValidator] { validator =>
         for {
-          result <- validator.validate(jsonDocument, jsonSchema)
+          configStr <- acquire("server/src/test/resources/config-schema.json")
+          spec   = JacksonUtils.getReader().readTree(configStr)
+          schema = JsonSchema(uri = SchemaId("schema-1"), spec = spec)
+          result <- validator.validate(doc, schema)
         } yield assertTrue(result == Right(()))
       }
     }
 
   def testFailure =
     test("validate failure") {
-      val spec = JacksonUtils.getReader().readTree("[]")
-      val jsonSchema =
-        JsonSchema(uri = SchemaId("schema-1"), spec = spec)
-
-      val json         = JacksonUtils.getReader().readTree("{}")
-      val jsonDocument = JsonDocument(json)
+      val json = JacksonUtils
+        .getReader()
+        .readTree("""
+          |{
+          |  "source": "/home/alice/image.iso",
+          |  "chunks": {
+          |    "size": 1024
+          |  }
+          |}
+        """.stripMargin)
+      val doc = JsonDocument(json)
 
       ZIO.serviceWithZIO[JsonSchemaValidator] { validator =>
         for {
-          result <- validator.validate(jsonDocument, jsonSchema)
-          error = "JSON value is of type array, not a JSON Schema (expected an object)"
+          configStr <- acquire("server/src/test/resources/config-schema.json")
+          spec   = JacksonUtils.getReader().readTree(configStr)
+          schema = JsonSchema(uri = SchemaId("schema-1"), spec = spec)
+          result <- validator.validate(doc, schema)
+          error = "object has missing required properties ([\"destination\"])"
         } yield assertTrue(result == Left(error))
       }
     }
+
+  def acquire(name: => String): ZIO[Any, IOException, String] =
+    ZIO.attemptBlockingIO(Source.fromFile(name).getLines().mkString)
 }

@@ -50,8 +50,25 @@ case class JacksonValidorClient() {
     }
 
   private def handleException(ex: ProcessingException): String = {
-    /* the error message is a multi-line text that
-    contiains a valid json between a header and a footer.
+    handleSyntaxError(ex)
+      .orElse(handleFatalError(ex))
+      .getOrElse(ex.getMessage())
+  }
+
+  private def handleFatalError(ex: ProcessingException): Option[String] = {
+    /* the error message is a multi-line text
+    where each line has a key and a value.
+    here we are only inte cleaning the error message to extract the valid json. */
+    ex
+      .getMessage()
+      .split("\n")
+      .find(_.startsWith("fatal: "))
+      .map(_.replace("fatal: ", ""))
+  }
+
+  private def handleSyntaxError(ex: ProcessingException): Option[String] = Try {
+    /* the error message is a multi-line text
+    that contiains a valid json between a header and a footer.
     here we are cleaning the error message to extract the valid json. */
     val str = ex
       .getMessage()
@@ -66,7 +83,8 @@ case class JacksonValidorClient() {
       .asScala
       .map(json => json.at("/message").asText())
       .mkString
-  }
+
+  }.toOption
 }
 
 object JacksonValidorClient {
