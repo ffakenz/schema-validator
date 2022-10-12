@@ -41,7 +41,7 @@ object JsonSchemaValidatorSuite {
 
   def testFailure =
     test("validate failure") {
-      val spec = JacksonUtils.nodeFactory().objectNode()
+      val spec = JacksonUtils.nodeFactory().arrayNode()
       val jsonSchema =
         JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 
@@ -51,7 +51,8 @@ object JsonSchemaValidatorSuite {
       ZIO.serviceWithZIO[JsonSchemaValidator] { validator =>
         for {
           result <- validator.validate(jsonDocument, jsonSchema)
-        } yield assertTrue(result == Left("error"))
+          error = "JSON value is of type array, not a JSON Schema (expected an object)"
+        } yield assertTrue(result == Left(error))
       }
     }
 }

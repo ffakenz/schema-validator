@@ -9,12 +9,15 @@ import com.github.fge.jsonschema.core.report.ProcessingReport
 import com.github.fge.jsonschema.main.JsonSchemaFactory
 import com.github.fge.jsonschema.main.JsonValidator
 import model.json._
-import JsonValidorClient._
+import JacksonValidorClient._
 import scala.util.Try
 
 import scala.jdk.CollectionConverters._
+import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import com.github.fge.jackson.JsonNodeReader
+import com.github.fge.jackson.JacksonUtils
 
-case class JsonValidorClient() {
+case class JacksonValidorClient() {
 
   def validate(
       schema: JsonNode,
@@ -27,23 +30,46 @@ case class JsonValidorClient() {
           val resultReport = validator.validate(schema, instance, deepCheck)
           resultReport
         }.toEither.left
-          .map(throwable => throwable.getMessage())
+          .map {
+            case ex: ProcessingException => handleException(ex)
+            case throwable               => throwable.getMessage()
+          }
           .flatMap { report =>
             if (report.isSuccess())
               Right(())
             else
               Left(
                 report.asScala
-                  .map(msg => msg.asException().getMessage())
-                  .toList
+                  .map { msg =>
+                    handleException(msg.asException())
+                  }
                   .mkString(",")
               )
           }
       )
     }
+
+  private def handleException(ex: ProcessingException): String = {
+    /* the error message is a multi-line text that
+    contiains a valid json between a header and a footer.
+    here we are cleaning the error message to extract the valid json. */
+    val str = ex
+      .getMessage()
+      .split("\n")
+      .drop(2)      // drop header
+      .dropRight(1) // drop footer
+      .mkString
+
+    JacksonUtils
+      .getReader()
+      .readTree(str)
+      .asScala
+      .map(json => json.at("/message").asText())
+      .mkString
+  }
 }
 
-object JsonValidorClient {
+object JacksonValidorClient {
 
   type Z[A] = ZIO[JsonValidator, Throwable, A]
 
@@ -55,8 +81,8 @@ object JsonValidorClient {
     )
   }
 
-  val layer: ZLayer[JsonValidator, Nothing, JsonValidorClient] =
+  val jacksonClient: ZLayer[JsonValidator, Nothing, JacksonValidorClient] =
     ZLayer {
-      ZIO.succeed(JsonValidorClient())
+      ZIO.succeed(JacksonValidorClient())
     }
 }

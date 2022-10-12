@@ -50,8 +50,9 @@ object JsonSchemaRegistrySuite {
       val original =
         JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 
+      val newSpec = JacksonUtils.nodeFactory().arrayNode()
       val expected =
-        original.copy(spec = spec) // @TODO modify spec
+        original.copy(spec = newSpec)
 
       ZIO.serviceWithZIO[JsonSchemaRegistry] { registry =>
         for {

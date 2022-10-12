@@ -6,7 +6,7 @@ import zio.logging.{ LogFormat, console }
 import infra.impl.JsonSchemaRegistry
 import service.impl.JsonSchemaValidator
 import service.impl.JsonDocumentCleaner
-import infra.impl.JsonValidorClient
+import infra.impl.JacksonValidorClient
 
 object Layers {
   val logger = Runtime.removeDefaultLoggers >>> SLF4J.slf4j
@@ -20,6 +20,6 @@ object Layers {
 
   val documentCleaner = JsonDocumentCleaner.layer
 
-  val jsonValidator       = JsonValidorClient.jsonValidator
-  val jsonValidatorClient = JsonValidorClient.layer
+  val jsonValidator       = JacksonValidorClient.jsonValidator
+  val jsonValidatorClient = JacksonValidorClient.jacksonClient
 }
