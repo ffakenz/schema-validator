@@ -3,7 +3,6 @@ import sbt._
 object Dependencies {
   object Versions {
     val zio                 = "2.0.2"
-    val zioActors           = "0.1.0"
     val zioTest             = "2.0.0"
     val zioConfig           = "2.0.9"
     val zioLogging          = "2.1.2"

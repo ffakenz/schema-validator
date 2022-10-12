@@ -6,7 +6,7 @@ import zio.test._
 
 object ServiceSpec extends ZIOSpecDefault {
   def spec =
-    suite("ServiceSpec")(
+    suite("ApplicationSpec")(
       test("assert true") {
         for {
           value <- ZIO.succeed(true)
