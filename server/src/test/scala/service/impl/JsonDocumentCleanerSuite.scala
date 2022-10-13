@@ -9,8 +9,8 @@ object JsonDocumentCleanerSuite {
 
   def jsonSuite =
     suite("JSON Suite")(
-      // testCleanDocument,
-      // testCleanDocumentIdempotent,
+      testCleanDocument,
+      testCleanDocumentIdempotent,
       testCleanNestedDocument
     ).provide(JsonDocumentCleaner.layer)
 
@@ -99,6 +99,9 @@ object JsonDocumentCleanerSuite {
           |  ],
           |  "o": [
           |    { "p": null }
+          |  ],
+          |  "o": [
+          |    [{ "p": null }]
           |  ]
           |}
         """.stripMargin)
@@ -122,6 +125,9 @@ object JsonDocumentCleanerSuite {
           |  ],
           |  "o": [
           |
+          |  ],
+          |  "o": [
+          |   []
           |  ]
           |}""".stripMargin)
       val expectedJsonDocument = JsonDocument(expectedJson)

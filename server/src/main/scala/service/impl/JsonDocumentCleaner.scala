@@ -36,16 +36,16 @@ case class JsonDocumentCleaner() extends DocumentCleaner[JSON, Z] {
   }
 
   private def cleanArrayUnsafe(document: Document[JSON]): Document[JSON] = {
-    val mapper    = new ObjectMapper()
-    val emptyJson = JacksonUtils.getReader().readTree("{}")
-    val json      = document.value
-    val values    = json.elements.asScala.toList
+    val mapper = new ObjectMapper()
+    val json   = document.value
+    val values = json.elements.asScala.toList
     val cleanDoc = values
       .foldLeft(mapper.createArrayNode()) { case (acc, value) =>
-        if (value.equals(emptyJson) || value.isNull()) {
+        if (value.isNull()) {
           acc
         } else {
-          val clean = cleanUnsafe(JsonDocument(value)).value
+          val emptyJson = JacksonUtils.getReader().readTree("{}")
+          val clean     = cleanUnsafe(JsonDocument(value)).value
           if (clean.equals(emptyJson) || clean.isNull()) acc
           else acc.add(clean)
         }
