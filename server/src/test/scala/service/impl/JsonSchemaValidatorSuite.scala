@@ -6,12 +6,12 @@ import model.json._
 import zio.ZLayer
 import zio.ZEnvironment
 import model.domain._
-import zio.UIO
+import zio.{ Scope, UIO }
 import service.impl.JsonSchemaValidator
 import infra.Layers
 import com.github.fge.jackson.JacksonUtils
 import java.io.IOException
-import scala.io.Source
+import scala.io.{ Source, BufferedSource }
 
 object JsonSchemaValidatorSuite {
 
@@ -22,7 +22,8 @@ object JsonSchemaValidatorSuite {
     ).provide(
       Layers.jsonValidator,
       Layers.jsonValidatorClient,
-      JsonSchemaValidator.layer
+      JsonSchemaValidator.layer,
+      Scope.default
     )
 
   def testSuccess =
@@ -42,9 +43,10 @@ object JsonSchemaValidatorSuite {
 
       ZIO.serviceWithZIO[JsonSchemaValidator] { validator =>
         for {
-          configStr <- acquire("server/src/test/resources/config-schema.json")
-          spec   = JacksonUtils.getReader().readTree(configStr)
-          schema = JsonSchema(uri = SchemaId("schema-1"), spec = spec)
+          file <- acquire("server/src/test/resources/config-schema.json")
+          configStr = file.getLines().mkString
+          spec      = JacksonUtils.getReader().readTree(configStr)
+          schema    = JsonSchema(uri = SchemaId("schema-1"), spec = spec)
           result <- validator.validate(doc, schema)
         } yield assertTrue(result == Right(()))
       }
@@ -66,15 +68,18 @@ object JsonSchemaValidatorSuite {
 
       ZIO.serviceWithZIO[JsonSchemaValidator] { validator =>
         for {
-          configStr <- acquire("server/src/test/resources/config-schema.json")
-          spec   = JacksonUtils.getReader().readTree(configStr)
-          schema = JsonSchema(uri = SchemaId("schema-1"), spec = spec)
+          file <- acquire("server/src/test/resources/config-schema.json")
+          configStr = file.getLines().mkString
+          spec      = JacksonUtils.getReader().readTree(configStr)
+          schema    = JsonSchema(uri = SchemaId("schema-1"), spec = spec)
           result <- validator.validate(doc, schema)
           error = "object has missing required properties ([\"destination\"])"
         } yield assertTrue(result == Left(error))
       }
     }
 
-  def acquire(name: => String): ZIO[Any, IOException, String] =
-    ZIO.attemptBlockingIO(Source.fromFile(name).getLines().mkString)
+  def acquire(name: => String): ZIO[Any with Scope, IOException, BufferedSource] =
+    ZIO.acquireRelease(
+      ZIO.attemptBlockingIO(Source.fromFile(name))
+    )(source => ZIO.attempt(source.close()).ignore)
 }
