@@ -2,12 +2,12 @@
 [![ZIO][Badge-ZIO]][Link-Zio]
 [![CI][Badge-CI]][Link-CI]
 
-|Technology   | Version
+|Technology   | Version   |
 |-------------|---------- |
-|Scala        | 2.13 |
-|SBT          | 1.7.1 |
-|JAVA         | 17 |
-|ZIO          | 2.0.2 |
+|Scala        | 2.13      |
+|SBT          | 1.7.1     |
+|JAVA         | 17        |
+|ZIO          | 2.0.2     |
 
 ### Repo setup
 Something handy to have in your git hooks is the one in `./scripts/githooks/pre-commit`
