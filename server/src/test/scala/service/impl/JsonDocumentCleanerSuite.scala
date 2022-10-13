@@ -9,8 +9,9 @@ object JsonDocumentCleanerSuite {
 
   def jsonSuite =
     suite("JSON Suite")(
-      testCleanDocument,
-      testCleanDocumentIdempotent
+      // testCleanDocument,
+      // testCleanDocumentIdempotent,
+      testCleanNestedDocument
     ).provide(JsonDocumentCleaner.layer)
 
   def testCleanDocumentIdempotent =
@@ -68,5 +69,67 @@ object JsonDocumentCleanerSuite {
       }
     }
 
-  // @REVIEW clean empty objects ???
+  def testCleanNestedDocument =
+    test("clean nested document from null values") {
+
+      val json = JacksonUtils
+        .getReader()
+        .readTree("""
+          |{
+          |  "a": "value",
+          |  "b": null,
+          |  "c": {
+          |    "d": "value"
+          |  },
+          |  "e": {
+          |    "f": {
+          |      "g": "value"
+          |    }
+          |  },
+          |  "h": {
+          |    "i": null
+          |  },
+          |  "j": {
+          |    "k": {
+          |      "l": null
+          |    }
+          |  },
+          |  "m": [
+          |    { "n": "value" }
+          |  ],
+          |  "o": [
+          |    { "p": null }
+          |  ]
+          |}
+        """.stripMargin)
+      val jsonDocument = JsonDocument(json)
+
+      val expectedJson = JacksonUtils
+        .getReader()
+        .readTree("""
+          |{
+          |  "a": "value",
+          |  "c": {
+          |    "d": "value"
+          |  },
+          |  "e": {
+          |    "f": {
+          |      "g": "value"
+          |    }
+          |  },
+          |  "m": [
+          |    { "n": "value" }
+          |  ],
+          |  "o": [
+          |
+          |  ]
+          |}""".stripMargin)
+      val expectedJsonDocument = JsonDocument(expectedJson)
+
+      ZIO.serviceWithZIO[JsonDocumentCleaner] { cleaner =>
+        for {
+          result <- cleaner.clean(jsonDocument)
+        } yield assertTrue(result == expectedJsonDocument)
+      }
+    }
 }
