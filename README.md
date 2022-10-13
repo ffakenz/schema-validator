@@ -1,4 +1,4 @@
-# Schema Validor
+# Schema Validator
 [![ZIO][Badge-ZIO]][Link-Zio]
 [![CI][Badge-CI]][Link-CI]
 
@@ -25,3 +25,6 @@ $ pre-commit install
 [Link-ZIO]: https://zio.dev/
 [Badge-CI]: https://github.com/ffakenz/schema-validator/actions/workflows/ci.yml/badge.svg
 [Link-CI]: https://github.com/ffakenz/schema-validator/actions/workflows/ci.yml
+
+### Watch Mode
+You can start the server and run it in watch mode using `~ reStart` command on the SBT console.
