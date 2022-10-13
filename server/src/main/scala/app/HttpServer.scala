@@ -7,17 +7,23 @@ import zio.{ Fiber, Scope }
 
 object HttpServer {
 
-  def run(hostname: String, port: Int): ZIO[Any, Throwable, Unit] =
+  def run(
+      hostname: String,
+      port: Int
+  ): ZIO[Any with Scope, Nothing, Fiber.Runtime[Throwable, Nothing]] =
     for {
-      _ <- serverSetup(hostname: String, port).startDefault
+      fiber <- serverSetup(hostname, port).startDefault
         .provide(
           ZLayer.succeed("api")
         )
-        .fork
-        .flatMap(_.join)
-    } yield ()
+        .forkScoped
+        .interruptible
+    } yield fiber
 
-  private def serverSetup(hostname: String, port: Int): Server[String, Throwable] =
+  private def serverSetup(
+      hostname: String,
+      port: Int
+  ): Server[String, Throwable] =
     Server.bind(hostname, port) ++
       Server.app(
         Routes() @@ MiddleWares()
