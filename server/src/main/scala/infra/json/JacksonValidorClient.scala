@@ -44,7 +44,9 @@ case class JacksonValidorClient(
                 .map { msg =>
                   handleException(msg.asException())
                 }
-                .mkString(", ") // @REVIEW(SN)
+                .zipWithIndex
+                .map { case (s, i) => s""" [$i]: $s """ }
+                .mkString("[", "||", "]") // @REVIEW(SN)
             )
         }
     )
