@@ -28,7 +28,10 @@ lazy val server = project
   )
   .settings(commonSettings, scalafixSettings)
   .settings(
-    libraryDependencies ++= Dependencies.JsonSchemaValidator.all
+    libraryDependencies ++= Seq(
+      Dependencies.JsonSchemaValidator.all,
+      Dependencies.Logback.all
+    ).flatten
   )
   .enablePlugins(ScalafixPlugin, BuildInfoPlugin)
   .dependsOn(api)

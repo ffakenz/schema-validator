@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <!-- Stop output INFO at start -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
     <appender name="STDOUT" target="System.out" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%d{HH:mm:ss.SSS} [%thread] trace_id=%X{trace_id} user_id=%X{user} %-5level %logger{36} %msg%n</Pattern>
+            <Pattern>%msg%n</Pattern>
         </layout>
     </appender>
     <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
@@ -13,7 +16,7 @@
     <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="STDOUT" />
     </appender>
-    <root level="debug">
+    <root level="INFO">
         <appender-ref ref="ASYNCSTDOUT" />
     </root>
 </configuration>

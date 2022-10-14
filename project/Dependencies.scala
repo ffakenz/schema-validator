@@ -9,6 +9,7 @@ object Dependencies {
     val zioJson             = "0.3.0"
     val zioHttp             = "2.0.0-RC11"
     val jsonSchemaValidator = "2.2.14"
+    val logback             = "1.4.4"
   }
 
   object Zio {
@@ -42,6 +43,14 @@ object Dependencies {
 
     val all = Seq(
       jsonSchemaValidator
+    )
+  }
+
+  object Logback {
+    val logback = "ch.qos.logback" % "logback-classic" % Versions.logback % Runtime
+
+    val all = Seq(
+      logback
     )
   }
 }
