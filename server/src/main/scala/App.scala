@@ -10,7 +10,7 @@ object App extends ZIOAppDefault {
     .catchAll { e => ZIO.logError(s"App Stopped: ${e.getMessage}") }
     .provide(Layers.logger)
 
-  private def app: ZIO[Any, Throwable, Unit] =
+  private def app: Task[Unit] =
     for {
       _ <- ZIO.logInfo("App Started")
       hostname = "0.0.0.0"

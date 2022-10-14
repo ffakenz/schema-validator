@@ -7,19 +7,14 @@ import zio.{ Fiber, Scope }
 
 object HttpServer {
 
-  def run(
-      hostname: String,
-      port: Int
-  ) = serverSetup(hostname, port).startDefault
-    .provide(
-      ZLayer.succeed("api")
-    )
-    .fork
+  def run(hostname: String, port: Int) =
+    serverSetup(hostname, port).startDefault
+      .provide(
+        ZLayer.succeed("api")
+      )
+      .fork
 
-  private def serverSetup(
-      hostname: String,
-      port: Int
-  ): Server[String, Throwable] =
+  private def serverSetup(hostname: String, port: Int) =
     Server.bind(hostname, port) ++
       Server.app(
         Routes() @@ MiddleWares()
