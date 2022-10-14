@@ -12,21 +12,23 @@ object Routes {
 
   def apply(): Http[algebra.SchemaF[JSON], Throwable, Request, Response] =
     Http
-      .fromZIO(
-        for {
-          algebra <- ZIO.service[algebra.SchemaF[JSON]]
-        } yield algebra
-      )
+      .fromZIO(ZIO.service[algebra.SchemaF[JSON]])
       .flatMap { algebra =>
         Http.collectZIO[Request] {
+
           case req @ (Method.POST -> !! / "schema" / schemaId) =>
-            for {
-              jsonStr <- req.body.asString
-              spec    <- ZIO.attempt(JacksonUtils.getReader().readTree(jsonStr)) // 400
-              uri    = SchemaId(schemaId)
-              schema = JsonSchema(uri = uri, spec = spec)
-              _ <- algebra.upload(schema)
-            } yield Response.json(SuccessResponse("upload", schemaId).toJson)
+            val action = "upload"
+            withJsonBody(req)(e =>
+              Response
+                .json(ErrorResponse(action, "schemaId", e.getMessage).toJson)
+                .setStatus(Status.BadRequest)
+            ) { spec =>
+              val uri    = SchemaId(schemaId)
+              val schema = JsonSchema(uri = uri, spec = spec)
+              for {
+                _ <- algebra.upload(schema)
+              } yield Response.json(SuccessResponse(action, schemaId).toJson)
+            }
 
           case Method.GET -> !! / "schema" / schemaId =>
             val uri = SchemaId(schemaId)
@@ -38,24 +40,38 @@ object Routes {
             }
 
           case req @ (Method.POST -> !! / "validate" / schemaId) =>
-            for {
-              jsonStr <- req.body.asString
-              json    <- ZIO.attempt(JacksonUtils.getReader().readTree(jsonStr)) // 400
-              doc = JsonDocument(json)
-              uri = SchemaId(schemaId)
-              result <- algebra.validate(uri, doc)
-            } yield result match {
-              case Left(error) =>
-                Response.json(ErrorResponse("validate", schemaId, error).toJson)
-              case Right(_) =>
-                Response.json(SuccessResponse("validate", schemaId).toJson)
+            val action = "validate"
+            withJsonBody(req)(e =>
+              Response
+                .json(ErrorResponse(action, "schemaId", e.getMessage).toJson)
+                .setStatus(Status.BadRequest)
+            ) { json =>
+              val doc = JsonDocument(json)
+              val uri = SchemaId(schemaId)
+              for {
+                result <- algebra.validate(uri, doc)
+              } yield result match {
+                case Left(error) =>
+                  Response.json(ErrorResponse(action, schemaId, error).toJson)
+                case Right(_) =>
+                  Response.json(SuccessResponse(action, schemaId).toJson)
+              }
             }
-
-          case Method.GET -> !! / "ready" =>
-            ZIO.succeed(Response.text(s"Service Ready"))
-
-          case Method.GET -> !! / "health" =>
-            ZIO.succeed(Response.text(s"Service Healthy"))
         }
+      }
+
+  private def withJsonBody(req: Request)(
+      errorHandler: Throwable => Response
+  )(
+      callback: JSON => ZIO[Any, Throwable, Response]
+  ): ZIO[Any, Throwable, Response] =
+    (for {
+      jsonStr  <- req.body.asString
+      spec     <- ZIO.attempt(JacksonUtils.getReader().readTree(jsonStr))
+      response <- callback(spec)
+    } yield response)
+      .catchAll { e =>
+        ZIO.succeed(errorHandler(e))
+
       }
 }

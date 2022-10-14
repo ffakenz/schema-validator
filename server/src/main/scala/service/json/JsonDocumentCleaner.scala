@@ -19,7 +19,7 @@ import com.github.fge.jackson.JacksonUtils
 case class JsonDocumentCleaner() extends DocumentCleaner[JSON, Task] {
 
   def clean(document: Document[JSON]): Task[Document[JSON]] = {
-    ZIO.fromTry(Try(cleanUnsafe(document)))
+    ZIO.attempt(cleanUnsafe(document))
   }
 
   private def cleanUnsafe(document: Document[JSON]): Document[JSON] = {
