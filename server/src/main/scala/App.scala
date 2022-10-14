@@ -11,7 +11,7 @@ object App extends ZIOAppDefault {
   private def app: Task[Unit] =
     for {
       _ <- ZIO.logInfo("App Started")
-      hostname = "0.0.0.0"
+      hostname = "localhost"
       port     = 8080
       _ <- ZIO.logInfo(
         s"Starting server to listen on port: http://$hostname:$port/api/health"

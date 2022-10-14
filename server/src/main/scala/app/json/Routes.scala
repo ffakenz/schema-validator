@@ -17,16 +17,18 @@ object Routes {
 
           case req @ (Method.POST -> !! / "schema" / schemaId) =>
             val action = "upload"
-            handleRequest(req)(e =>
+            handleRequest(req)(_ =>
               Response
-                .json(ErrorResponse(action, "schemaId", e.getMessage).toJson)
+                .json(ErrorResponse(action, "schemaId", "Invalid JSON").toJson)
                 .setStatus(Status.BadRequest)
             ) { spec =>
               val uri    = SchemaId(schemaId)
               val schema = JsonSchema(uri = uri, spec = spec)
               for {
                 _ <- algebra.upload(schema)
-              } yield Response.json(SuccessResponse(action, schemaId).toJson)
+              } yield Response
+                .json(SuccessResponse(action, schemaId).toJson)
+                .setStatus(Status.Created)
             }
 
           case Method.GET -> !! / "schema" / schemaId =>
@@ -40,9 +42,9 @@ object Routes {
 
           case req @ (Method.POST -> !! / "validate" / schemaId) =>
             val action = "validate"
-            handleRequest(req)(e =>
+            handleRequest(req)(_ =>
               Response
-                .json(ErrorResponse(action, "schemaId", e.getMessage).toJson)
+                .json(ErrorResponse(action, "schemaId", "Invalid JSON").toJson)
                 .setStatus(Status.BadRequest)
             ) { json =>
               val doc = JsonDocument(json)
