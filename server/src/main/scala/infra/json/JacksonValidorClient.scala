@@ -44,7 +44,7 @@ case class JacksonValidorClient(
                 .map { msg =>
                   handleException(msg.asException())
                 }
-                .mkString(",") // @REVIEW(SN)
+                .mkString(", ") // @REVIEW(SN)
             )
         }
     )
