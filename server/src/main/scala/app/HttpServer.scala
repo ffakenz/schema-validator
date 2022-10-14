@@ -10,7 +10,6 @@ object HttpServer {
   def run(hostname: String, port: Int) =
     serverSetup(hostname, port).startDefault
       .provide(
-        ZLayer.succeed("api"),
         infra.json.Layers.schemaRegistry,
         infra.json.Layers.schemaValidator,
         infra.json.Layers.documentCleaner,
