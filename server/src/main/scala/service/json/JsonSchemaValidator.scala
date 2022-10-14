@@ -1,15 +1,11 @@
 package service.json
 
-import model.domain.{ Document, Schema, URI }
-import model.json.JSON
-import zio.{ Task, ZIO }
-import zio.ZLayer
-import model.domain
-import service.SchemaValidator
 import infra.json.JacksonValidorClient
-import com.github.fge.jsonschema.main.JsonValidator
+import model.domain.{ Document, Schema }
+import model.json.JSON
+import service.SchemaValidator
+import zio.{ Task, ZIO, ZLayer }
 
-// @TODO use json-schema-validator lib
 case class JsonSchemaValidator(
     validator: JacksonValidorClient
 ) extends SchemaValidator[JSON, Task] {

@@ -1,21 +1,13 @@
 package infra.json
 
-import zio.ZIO
-import zio.{ Task, ZLayer }
 import com.fasterxml.jackson.databind.JsonNode
-import com.github.fge.jackson.JsonLoader
+import com.github.fge.jackson.JacksonUtils
 import com.github.fge.jsonschema.core.exceptions.ProcessingException
-import com.github.fge.jsonschema.core.report.ProcessingReport
-import com.github.fge.jsonschema.main.JsonSchemaFactory
-import com.github.fge.jsonschema.main.JsonValidator
-import model.json._
-import JacksonValidorClient._
-import scala.util.Try
+import com.github.fge.jsonschema.main.{ JsonSchemaFactory, JsonValidator }
+import zio.{ Task, ZIO, ZLayer }
 
 import scala.jdk.CollectionConverters._
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import com.github.fge.jackson.JsonNodeReader
-import com.github.fge.jackson.JacksonUtils
+import scala.util.Try
 
 case class JacksonValidorClient(
     validator: JsonValidator
@@ -33,10 +25,10 @@ case class JacksonValidorClient(
       }.toEither.left
         .map {
           case ex: ProcessingException => handleException(ex)
-          case throwable               => throwable.getMessage()
+          case throwable               => throwable.getMessage
         }
         .flatMap { report =>
-          if (report.isSuccess())
+          if (report.isSuccess)
             Right(())
           else
             Left(
@@ -46,7 +38,7 @@ case class JacksonValidorClient(
                 }
                 .zipWithIndex
                 .map { case (s, i) => s""" [$i]: $s """ }
-                .mkString("[", "||", "]") // @REVIEW(SN)
+                .mkString("[", "||", "]")
             )
         }
     )
@@ -54,15 +46,14 @@ case class JacksonValidorClient(
   private def handleException(ex: ProcessingException): String = {
     handleSyntaxError(ex)
       .orElse(handleFatalError(ex))
-      .getOrElse(ex.getMessage()) // @REVIEW(SN)
+      .getOrElse(ex.getMessage)
   }
 
   private def handleFatalError(ex: ProcessingException): Option[String] = {
     /* the error message is a multi-line text
     where each line has a key and a value.
     here we are cleaning the error message to extract a the fatal error msg. */
-    ex
-      .getMessage()
+    ex.getMessage
       .split("\n")
       .find(_.startsWith("fatal: "))
       .map(_.replace("fatal: ", ""))
@@ -73,15 +64,13 @@ case class JacksonValidorClient(
       /* the error message is a multi-line text
     that contiains a valid json between a header and a footer.
     here we are cleaning the error message to extract the valid json. */
-      val str = ex
-        .getMessage()
+      val str = ex.getMessage
         .split("\n")
         .drop(2)      // drop header
         .dropRight(1) // drop footer
         .mkString
 
-      JacksonUtils
-        .getReader()
+      JacksonUtils.getReader
         .readTree(str)
         .asScala
         .map(json => json.at("/message").asText())
@@ -96,7 +85,7 @@ object JacksonValidorClient {
     ZLayer {
       ZIO.attempt(
         JacksonValidorClient(
-          JsonSchemaFactory.byDefault().getValidator()
+          JsonSchemaFactory.byDefault.getValidator
         )
       )
     }

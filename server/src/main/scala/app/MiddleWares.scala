@@ -1,8 +1,8 @@
 package app
 
-import zio.ZIO
-import zhttp.http.{ Http, HttpApp, Middleware, Request, Response, Status }
 import zhttp.http.middleware.HttpMiddleware
+import zhttp.http._
+import zio.ZIO
 
 import java.io.IOException
 

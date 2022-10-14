@@ -1,13 +1,12 @@
 package model
 
-import domain._
 import com.fasterxml.jackson.databind.JsonNode
+import model.domain._
 
 object json {
 
   type JSON = JsonNode
 
-  // @TODO use URI
   case class SchemaId(
       schemaURI: String
   ) extends URI

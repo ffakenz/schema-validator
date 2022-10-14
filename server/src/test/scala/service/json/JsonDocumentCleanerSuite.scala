@@ -1,9 +1,9 @@
 package service.json
 
+import com.github.fge.jackson.JacksonUtils
+import model.json.JsonDocument
 import zio.ZIO
 import zio.test.{ test, _ }
-import model.json.{ JsonDocument }
-import com.github.fge.jackson.JacksonUtils
 
 object JsonDocumentCleanerSuite {
 
@@ -17,8 +17,7 @@ object JsonDocumentCleanerSuite {
   def testCleanDocumentIdempotent =
     test("clean document without nothing to clean") {
 
-      val json = JacksonUtils
-        .getReader()
+      val json = JacksonUtils.getReader
         .readTree("""
           |{
           |  "source": "/home/alice/image.iso",
@@ -39,8 +38,7 @@ object JsonDocumentCleanerSuite {
   def testCleanDocument =
     test("clean document from null values") {
 
-      val json = JacksonUtils
-        .getReader()
+      val json = JacksonUtils.getReader
         .readTree("""
           |{
           |  "source": null,
@@ -51,8 +49,7 @@ object JsonDocumentCleanerSuite {
         """.stripMargin)
       val jsonDocument = JsonDocument(json)
 
-      val expectedJson = JacksonUtils
-        .getReader()
+      val expectedJson = JacksonUtils.getReader
         .readTree("""
           |{
           |  "chunks": {
@@ -72,8 +69,7 @@ object JsonDocumentCleanerSuite {
   def testCleanNestedDocument =
     test("clean nested document from null values") {
 
-      val json = JacksonUtils
-        .getReader()
+      val json = JacksonUtils.getReader
         .readTree("""
           |{
           |  "a": "value",
@@ -107,8 +103,7 @@ object JsonDocumentCleanerSuite {
         """.stripMargin)
       val jsonDocument = JsonDocument(json)
 
-      val expectedJson = JacksonUtils
-        .getReader()
+      val expectedJson = JacksonUtils.getReader
         .readTree("""
           |{
           |  "a": "value",

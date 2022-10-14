@@ -1,14 +1,11 @@
 package infra.json
 
+import infra.SchemaRegistry
+import infra.json.JsonSchemaRegistry.Registry
 import model.domain.{ Schema, URI }
 import model.json.JSON
-import zio.ZIO
-import zio.ZLayer
-import JsonSchemaRegistry.Registry
-import infra.SchemaRegistry
-import zio.{ Ref, Task }
+import zio.{ Ref, Task, ZLayer }
 
-// @TODO use zio-json
 case class JsonSchemaRegistry(
     ref: Registry
 ) extends SchemaRegistry[JSON, Task] {

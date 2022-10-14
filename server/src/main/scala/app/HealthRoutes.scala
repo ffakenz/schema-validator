@@ -1,6 +1,6 @@
 package app
 
-import zhttp.http.{ Http, Method, Request, Response, !!, /, -> }
+import zhttp.http._
 
 object HealthRoutes {
 

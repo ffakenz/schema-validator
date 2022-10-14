@@ -1,20 +1,13 @@
 package service.json
 
-import model.domain.{ Document, Schema, URI }
-import model.json.JSON
-import zio.{ Task, ZIO }
-import zio.ZLayer
-import model.domain
-import service.DocumentCleaner
-import scala.jdk.CollectionConverters._
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import scala.util.Try
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.fge.jsonschema.main.JsonSchemaFactory
-import com.github.fge.jsonschema.main.JsonValidator
-import model.json.JsonDocument
 import com.github.fge.jackson.JacksonUtils
+import model.domain.Document
+import model.json.{ JSON, JsonDocument }
+import service.DocumentCleaner
+import zio.{ Task, ZIO, ZLayer }
+
+import scala.jdk.CollectionConverters._
 
 case class JsonDocumentCleaner() extends DocumentCleaner[JSON, Task] {
 
@@ -25,9 +18,9 @@ case class JsonDocumentCleaner() extends DocumentCleaner[JSON, Task] {
   private def cleanUnsafe(document: Document[JSON]): Document[JSON] = {
     val json = document.value
 
-    if (json.isArray()) {
+    if (json.isArray) {
       cleanArrayUnsafe(document)
-    } else if (json.isObject()) {
+    } else if (json.isObject) {
       cleanObjectUnsafe(document)
     } else {
       document
@@ -35,17 +28,17 @@ case class JsonDocumentCleaner() extends DocumentCleaner[JSON, Task] {
   }
 
   private def cleanArrayUnsafe(document: Document[JSON]): Document[JSON] = {
-    val mapper = new ObjectMapper()
+    val mapper = new ObjectMapper
     val json   = document.value
     val values = json.elements.asScala.toList
     val cleanDoc = values
       .foldLeft(mapper.createArrayNode()) { case (acc, value) =>
-        if (value.isNull()) {
+        if (value.isNull) {
           acc
         } else {
-          val emptyJson = JacksonUtils.getReader().readTree("{}")
+          val emptyJson = JacksonUtils.getReader.readTree("{}")
           val clean     = cleanUnsafe(JsonDocument(value)).value
-          if (clean.equals(emptyJson) || clean.isNull()) acc
+          if (clean.equals(emptyJson) || clean.isNull) acc
           else acc.add(clean)
         }
       }
@@ -53,18 +46,18 @@ case class JsonDocumentCleaner() extends DocumentCleaner[JSON, Task] {
   }
 
   private def cleanObjectUnsafe(document: Document[JSON]): Document[JSON] = {
-    val mapper    = new ObjectMapper()
-    val emptyJson = JacksonUtils.getReader().readTree("{}")
+    val mapper    = new ObjectMapper
+    val emptyJson = JacksonUtils.getReader.readTree("{}")
     val json      = document.value
     val keys      = json.fieldNames.asScala.toList
     val values    = json.elements.asScala.toList
 
     val cleanDoc = (keys zip values)
       .foldLeft(mapper.createObjectNode()) { case (acc, (key, value)) =>
-        if (value.equals(emptyJson) || value.isNull()) acc
-        else if (value.elements().asScala.nonEmpty) {
+        if (value.equals(emptyJson) || value.isNull) acc
+        else if (value.elements.asScala.nonEmpty) {
           val clean = cleanUnsafe(JsonDocument(value)).value
-          if (clean.equals(emptyJson) || clean.isNull()) acc
+          if (clean.equals(emptyJson) || clean.isNull) acc
           else acc.set(key, clean)
         } else acc.set(key, value)
       }

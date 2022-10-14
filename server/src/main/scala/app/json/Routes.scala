@@ -1,11 +1,10 @@
 package app.json
 
-import zio.ZIO
-import zio.Tag
-import zhttp.http.{ Http, Method, Request, Response, Status, !!, /, -> }
+import app.ServiceResponse._
 import com.github.fge.jackson.JacksonUtils
 import model.json.{ JSON, JsonDocument, JsonSchema, SchemaId }
-import app.ServiceResposne._
+import zhttp.http._
+import zio.ZIO
 import zio.json._
 
 object Routes {
@@ -67,15 +66,15 @@ object Routes {
   ): ZIO[Any, Throwable, Response] =
     (for {
       jsonStr <- req.body.asString
-      spec    <- ZIO.attempt(JacksonUtils.getReader().readTree(jsonStr))
-      response <- ZIO.when(spec.isObject())(callback(spec)).map {
+      spec    <- ZIO.attempt(JacksonUtils.getReader.readTree(jsonStr))
+      response <- ZIO.when(spec.isObject)(callback(spec)).map {
         case Some(resp) => resp
         case None       => Response.status(Status.BadRequest)
       }
     } yield response)
       .catchAll {
-        case e: NoSuchElementException   => ZIO.succeed(Response.status(Status.NotFound))
-        case e: IllegalArgumentException => ZIO.succeed(Response.status(Status.BadRequest))
+        case _: NoSuchElementException   => ZIO.succeed(Response.status(Status.NotFound))
+        case _: IllegalArgumentException => ZIO.succeed(Response.status(Status.BadRequest))
         case e                           => ZIO.succeed(errorHandler(e))
       }
 }

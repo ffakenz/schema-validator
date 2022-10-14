@@ -1,13 +1,12 @@
 package infra.json
 
-import zio._
-import zio.logging.backend.SLF4J
-import zio.logging.LogFormat
-import infra.json.JsonSchemaRegistry
 import service.json.{ JsonDocumentCleaner, JsonSchemaValidator }
-import infra.json.JacksonValidorClient
+import zio._
+import zio.logging.LogFormat
+import zio.logging.backend.SLF4J
 
 object Layers {
+
   val logger = Runtime.removeDefaultLoggers >>> SLF4J.slf4j(LogFormat.colored)
 
   val schemaRegistry = JsonSchemaRegistry.live

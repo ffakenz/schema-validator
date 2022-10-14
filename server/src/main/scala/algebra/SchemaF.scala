@@ -1,10 +1,9 @@
 package algebra
 
-import model.domain
 import infra.SchemaRegistry
-import zio.{ ZLayer, ZIO }
-import zio.{ Tag, Task, RIO }
+import model.domain
 import service.{ DocumentCleaner, SchemaValidator }
+import zio.{ Tag, Task, ZIO, ZLayer }
 
 case class SchemaF[A](
     registry: SchemaRegistry[A, Task],

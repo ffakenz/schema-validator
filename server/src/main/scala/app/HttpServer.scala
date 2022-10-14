@@ -1,9 +1,6 @@
 package app
 
-import zio.ZLayer
 import zhttp.service.Server
-import zio.ZIO
-import zio.{ Fiber, Scope }
 
 object HttpServer {
 

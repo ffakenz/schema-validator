@@ -1,13 +1,9 @@
 package infra.json
 
-import zio.{ ZIO, Ref }
-import zio.test.{ test, _ }
-import model.json._
-import zio.ZLayer
-import zio.ZEnvironment
-import model.domain._
-import zio.UIO
 import com.github.fge.jackson.JacksonUtils
+import model.json._
+import zio.ZIO
+import zio.test.{ test, _ }
 
 object JsonSchemaRegistrySuite {
 
@@ -29,7 +25,7 @@ object JsonSchemaRegistrySuite {
 
   def testUploadSchema =
     test("upload and downlaod schema") {
-      val spec = JacksonUtils.getReader().readTree("{}")
+      val spec = JacksonUtils.getReader.readTree("{}")
       val expectedSchema =
         JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 
@@ -37,17 +33,17 @@ object JsonSchemaRegistrySuite {
         for {
           _           <- registry.upload(expectedSchema)
           maybeSchema <- registry.download(expectedSchema.uri)
-        } yield assertTrue(maybeSchema == Some(expectedSchema))
+        } yield assertTrue(maybeSchema contains expectedSchema)
       }
     }
 
   def testShouldOverrideExisting =
     test("upload and override existing schema") {
-      val spec = JacksonUtils.getReader().readTree("{}")
+      val spec = JacksonUtils.getReader.readTree("{}")
       val original =
         JsonSchema(uri = SchemaId("schema-1"), spec = spec)
 
-      val newSpec = JacksonUtils.nodeFactory().arrayNode()
+      val newSpec = JacksonUtils.nodeFactory.arrayNode
       val expected =
         original.copy(spec = newSpec)
 
@@ -56,7 +52,7 @@ object JsonSchemaRegistrySuite {
           _           <- registry.upload(original)
           _           <- registry.upload(expected)
           maybeSchema <- registry.download(original.uri)
-        } yield assertTrue(maybeSchema == Some(expected))
+        } yield assertTrue(maybeSchema contains expected)
       }
     }
 }

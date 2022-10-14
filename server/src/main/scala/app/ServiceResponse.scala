@@ -2,19 +2,19 @@ package app
 
 import zio.json._
 
-sealed trait ServiceResposne {
+sealed trait ServiceResponse {
   def action: String
   def id: String
   def status: String
 }
 
-object ServiceResposne {
+object ServiceResponse {
 
   case class SuccessResponse(
       action: String,
       id: String,
       status: String
-  ) extends ServiceResposne
+  ) extends ServiceResponse
 
   object SuccessResponse {
     def apply(
@@ -31,7 +31,7 @@ object ServiceResposne {
       id: String,
       status: String,
       message: String
-  ) extends ServiceResposne
+  ) extends ServiceResponse
 
   object ErrorResponse {
     def apply(
