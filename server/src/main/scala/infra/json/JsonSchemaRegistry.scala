@@ -1,4 +1,4 @@
-package infra.impl
+package infra.json
 
 import model.domain.{ Schema, URI }
 import model.json.JSON

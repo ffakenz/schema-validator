@@ -1,4 +1,4 @@
-package service.impl
+package service.json
 
 import zio.{ ZIO, Ref }
 import zio.test.{ test, _ }
@@ -7,7 +7,7 @@ import zio.ZLayer
 import zio.ZEnvironment
 import model.domain._
 import zio.{ Scope, UIO }
-import service.impl.JsonSchemaValidator
+import service.json.JsonSchemaValidator
 import infra.Layers
 import com.github.fge.jackson.JacksonUtils
 import java.io.IOException

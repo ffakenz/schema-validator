@@ -1,4 +1,4 @@
-package infra.impl
+package infra.json
 
 import zio.{ ZIO, Ref }
 import zio.test.{ test, _ }

@@ -1,4 +1,4 @@
-package service.impl
+package service.json
 
 import model.domain.{ Document, Schema, URI }
 import model.json.JSON
@@ -7,7 +7,7 @@ import zio.ZLayer
 import JsonSchemaValidator.Z
 import model.domain
 import service.SchemaValidator
-import infra.impl.JacksonValidorClient
+import infra.json.JacksonValidorClient
 import com.github.fge.jsonschema.main.JsonValidator
 
 // @TODO use json-schema-validator lib

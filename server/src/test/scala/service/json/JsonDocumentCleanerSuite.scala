@@ -1,4 +1,4 @@
-package service.impl
+package service.json
 
 import zio.ZIO
 import zio.test.{ test, _ }

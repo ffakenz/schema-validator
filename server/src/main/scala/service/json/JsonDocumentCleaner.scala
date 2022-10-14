@@ -1,4 +1,4 @@
-package service.impl
+package service.json
 
 import model.domain.{ Document, Schema, URI }
 import model.json.JSON
