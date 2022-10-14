@@ -10,15 +10,11 @@ object HttpServer {
   def run(
       hostname: String,
       port: Int
-  ): ZIO[Any with Scope, Nothing, Fiber.Runtime[Throwable, Nothing]] =
-    for {
-      fiber <- serverSetup(hostname, port).startDefault
-        .provide(
-          ZLayer.succeed("api")
-        )
-        .forkScoped
-        .interruptible
-    } yield fiber
+  ) = serverSetup(hostname, port).startDefault
+    .provide(
+      ZLayer.succeed("api")
+    )
+    .fork
 
   private def serverSetup(
       hostname: String,

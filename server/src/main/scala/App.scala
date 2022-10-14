@@ -7,14 +7,10 @@ import scala.io.StdIn
 object App extends ZIOAppDefault {
 
   override val run = app
-    .onExit { cleanup =>
-      ZIO.logWarning(s"Termianting server") *>
-        cleanup.flatMapExitZIO { server => server.interrupt }
-    }
     .catchAll { e => ZIO.logError(s"App Stopped: ${e.getMessage}") }
-    .provide(Layers.logger, Scope.default)
+    .provide(Layers.logger)
 
-  private def app: ZIO[Any with Scope, Throwable, Fiber.Runtime[Throwable, Nothing]] =
+  private def app: ZIO[Any, Throwable, Unit] =
     for {
       _ <- ZIO.logInfo("App Started")
       hostname = "0.0.0.0"
@@ -22,7 +18,7 @@ object App extends ZIOAppDefault {
       _ <- ZIO.logInfo(
         s"Starting server to listen on port: http://$hostname:$port/api/health"
       )
-      running <- HttpServer.run(hostname, port)
-      _       <- ZIO.never
-    } yield running
+      _ <- HttpServer.run(hostname, port)
+      _ <- ZIO.never
+    } yield ()
 }
