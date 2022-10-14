@@ -28,3 +28,12 @@ $ pre-commit install
 
 ### Watch Mode
 You can start the server and run it in watch mode using `~ reStart` command on the SBT console.
+
+# Run the server
+You can start the server using:
+
+```shell
+$ sbt "server/run"
+```
+
+Now, give the [demo](./docs/demo.md) a try!
