@@ -1,4 +1,4 @@
-package infra
+package infra.json
 
 import zio._
 import zio.logging.backend.SLF4J

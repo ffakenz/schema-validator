@@ -1,7 +1,7 @@
 import zio._
 
 import app.HttpServer
-import infra.Layers
+import infra.json.Layers
 import scala.io.StdIn
 
 object App extends ZIOAppDefault {

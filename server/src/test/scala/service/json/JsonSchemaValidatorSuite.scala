@@ -8,7 +8,7 @@ import zio.ZEnvironment
 import model.domain._
 import zio.{ Scope, UIO }
 import service.json.JsonSchemaValidator
-import infra.Layers
+import infra.json.Layers
 import com.github.fge.jackson.JacksonUtils
 import java.io.IOException
 import scala.io.{ Source, BufferedSource }
