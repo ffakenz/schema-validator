@@ -18,7 +18,7 @@ object Routes {
 
           case req @ (Method.POST -> !! / "schema" / schemaId) =>
             val action = "upload"
-            withJsonBody(req)(e =>
+            handleRequest(req)(e =>
               Response
                 .json(ErrorResponse(action, "schemaId", e.getMessage).toJson)
                 .setStatus(Status.BadRequest)
@@ -41,7 +41,7 @@ object Routes {
 
           case req @ (Method.POST -> !! / "validate" / schemaId) =>
             val action = "validate"
-            withJsonBody(req)(e =>
+            handleRequest(req)(e =>
               Response
                 .json(ErrorResponse(action, "schemaId", e.getMessage).toJson)
                 .setStatus(Status.BadRequest)
@@ -60,18 +60,22 @@ object Routes {
         }
       }
 
-  private def withJsonBody(req: Request)(
+  private def handleRequest(req: Request)(
       errorHandler: Throwable => Response
   )(
       callback: JSON => ZIO[Any, Throwable, Response]
   ): ZIO[Any, Throwable, Response] =
     (for {
-      jsonStr  <- req.body.asString
-      spec     <- ZIO.attempt(JacksonUtils.getReader().readTree(jsonStr))
-      response <- callback(spec)
+      jsonStr <- req.body.asString
+      spec    <- ZIO.attempt(JacksonUtils.getReader().readTree(jsonStr))
+      response <- ZIO.when(spec.isObject())(callback(spec)).map {
+        case Some(resp) => resp
+        case None       => Response.status(Status.BadRequest)
+      }
     } yield response)
-      .catchAll { e =>
-        ZIO.succeed(errorHandler(e))
-
+      .catchAll {
+        case e: NoSuchElementException   => ZIO.succeed(Response.status(Status.NotFound))
+        case e: IllegalArgumentException => ZIO.succeed(Response.status(Status.BadRequest))
+        case e                           => ZIO.succeed(errorHandler(e))
       }
 }

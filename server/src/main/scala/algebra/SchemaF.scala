@@ -20,9 +20,13 @@ case class SchemaF[A](
 
   def validate(uri: domain.URI, doc: domain.Document[A]): Task[Either[String, Unit]] =
     for {
-      schema   <- registry.download(uri)
+      maybeSchema <- registry.download(uri)
+      schema <- maybeSchema match {
+        case Some(s) => ZIO.succeed(s)
+        case None    => ZIO.fail(new NoSuchElementException(s"schema not found"))
+      }
       cleanDoc <- cleaner.clean(doc)
-      result   <- validator.validate(cleanDoc, schema.get)
+      result   <- validator.validate(cleanDoc, schema)
     } yield result
 
 }
