@@ -12,12 +12,16 @@ object ServiceResposne {
 
   case class SuccessResponse(
       action: String,
-      id: String
-  ) extends ServiceResposne {
-    val status: String = "success"
-  }
+      id: String,
+      status: String
+  ) extends ServiceResposne
 
   object SuccessResponse {
+    def apply(
+        action: String,
+        id: String
+    ): SuccessResponse = SuccessResponse(action, id, "success")
+
     implicit val encoder: JsonEncoder[SuccessResponse] =
       DeriveJsonEncoder.gen[SuccessResponse]
   }
@@ -25,12 +29,17 @@ object ServiceResposne {
   case class ErrorResponse(
       action: String,
       id: String,
+      status: String,
       message: String
-  ) extends ServiceResposne {
-    val status: String = "error"
-  }
+  ) extends ServiceResposne
 
   object ErrorResponse {
+    def apply(
+        action: String,
+        id: String,
+        message: String
+    ): ErrorResponse = ErrorResponse(action, id, "error", message)
+
     implicit val encoder: JsonEncoder[ErrorResponse] =
       DeriveJsonEncoder.gen[ErrorResponse]
   }
