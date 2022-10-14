@@ -10,15 +10,11 @@ import infra.json.JacksonValidorClient
 object Layers {
   val logger = Runtime.removeDefaultLoggers >>> SLF4J.slf4j(LogFormat.colored)
 
-  val registry: ZLayer[Any, Nothing, JsonSchemaRegistry.Registry] = ZLayer(Ref.make(Map.empty))
+  val schemaRegistry = JsonSchemaRegistry.live
 
-  val schemaRegistry = JsonSchemaRegistry.layer
+  val schemaValidator = JsonSchemaValidator.live
 
-  val schemaValidator = JsonSchemaValidator.layer
+  val documentCleaner = JsonDocumentCleaner.live
 
-  val documentCleaner = JsonDocumentCleaner.layer
-
-  val jsonValidator = JacksonValidorClient.jsonValidator
-
-  val jsonValidatorClient = JacksonValidorClient.jacksonClient
+  val jsonValidator = JacksonValidorClient.live
 }

@@ -1,7 +1,7 @@
 package infra.json
 
 import zio.ZIO
-import zio.ZLayer
+import zio.{ Task, ZLayer }
 import com.fasterxml.jackson.databind.JsonNode
 import com.github.fge.jackson.JsonLoader
 import com.github.fge.jsonschema.core.exceptions.ProcessingException
@@ -17,37 +17,37 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.github.fge.jackson.JsonNodeReader
 import com.github.fge.jackson.JacksonUtils
 
-case class JacksonValidorClient() {
+case class JacksonValidorClient(
+    validator: JsonValidator
+) {
 
   def validate(
       schema: JsonNode,
       instance: JsonNode,
       deepCheck: Boolean = true
-  ): Z[Either[String, Unit]] =
-    ZIO.serviceWithZIO[JsonValidator] { validator =>
-      ZIO.succeed(
-        Try {
-          val resultReport = validator.validate(schema, instance, deepCheck)
-          resultReport
-        }.toEither.left
-          .map {
-            case ex: ProcessingException => handleException(ex)
-            case throwable               => throwable.getMessage()
-          }
-          .flatMap { report =>
-            if (report.isSuccess())
-              Right(())
-            else
-              Left(
-                report.asScala
-                  .map { msg =>
-                    handleException(msg.asException())
-                  }
-                  .mkString(",") // @REVIEW(SN)
-              )
-          }
-      )
-    }
+  ): Task[Either[String, Unit]] =
+    ZIO.succeed(
+      Try {
+        val resultReport = validator.validate(schema, instance, deepCheck)
+        resultReport
+      }.toEither.left
+        .map {
+          case ex: ProcessingException => handleException(ex)
+          case throwable               => throwable.getMessage()
+        }
+        .flatMap { report =>
+          if (report.isSuccess())
+            Right(())
+          else
+            Left(
+              report.asScala
+                .map { msg =>
+                  handleException(msg.asException())
+                }
+                .mkString(",") // @REVIEW(SN)
+            )
+        }
+    )
 
   private def handleException(ex: ProcessingException): String = {
     handleSyntaxError(ex)
@@ -90,18 +90,12 @@ case class JacksonValidorClient() {
 
 object JacksonValidorClient {
 
-  type Z[A] = ZIO[JsonValidator, Throwable, A]
-
-  val jsonValidator: ZLayer[Any, Throwable, JsonValidator] = ZLayer {
-    ZIO.fromTry(
-      Try {
-        JsonSchemaFactory.byDefault().getValidator()
-      }
-    )
-  }
-
-  val jacksonClient: ZLayer[JsonValidator, Nothing, JacksonValidorClient] =
+  val live: ZLayer[Any, Throwable, JacksonValidorClient] =
     ZLayer {
-      ZIO.succeed(JacksonValidorClient())
+      ZIO.attempt(
+        JacksonValidorClient(
+          JsonSchemaFactory.byDefault().getValidator()
+        )
+      )
     }
 }

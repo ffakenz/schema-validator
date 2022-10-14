@@ -11,15 +11,12 @@ import com.github.fge.jackson.JacksonUtils
 
 object JsonSchemaRegistrySuite {
 
-  val registry: ZLayer[Any, Nothing, JsonSchemaRegistry.Registry] =
-    ZLayer(Ref.make(Map.empty))
-
   def jsonSuite =
     suite("JSON Suite")(
       testNotFound,
       testUploadSchema,
       testShouldOverrideExisting
-    ).provide(registry, JsonSchemaRegistry.layer)
+    ).provide(JsonSchemaRegistry.live)
 
   def testNotFound =
     test("download none existing schema id") {

@@ -2,9 +2,8 @@ package service.json
 
 import model.domain.{ Document, Schema, URI }
 import model.json.JSON
-import zio.ZIO
+import zio.{ Task, ZIO }
 import zio.ZLayer
-import JsonDocumentCleaner.Z
 import model.domain
 import service.DocumentCleaner
 import scala.jdk.CollectionConverters._
@@ -17,9 +16,9 @@ import com.github.fge.jsonschema.main.JsonValidator
 import model.json.JsonDocument
 import com.github.fge.jackson.JacksonUtils
 
-case class JsonDocumentCleaner() extends DocumentCleaner[JSON, Z] {
+case class JsonDocumentCleaner() extends DocumentCleaner[JSON, Task] {
 
-  def clean(document: Document[JSON]): Z[Document[JSON]] = {
+  def clean(document: Document[JSON]): Task[Document[JSON]] = {
     ZIO.fromTry(Try(cleanUnsafe(document)))
   }
 
@@ -74,17 +73,8 @@ case class JsonDocumentCleaner() extends DocumentCleaner[JSON, Z] {
 }
 
 object JsonDocumentCleaner {
-  type Z[A] = ZIO[Any, Throwable, A]
 
-  val jsonValidator: ZLayer[Any, Throwable, JsonValidator] = ZLayer {
-    ZIO.fromTry(
-      Try {
-        JsonSchemaFactory.byDefault().getValidator()
-      }
-    )
-  }
-
-  val layer: ZLayer[Any, Nothing, JsonDocumentCleaner] =
+  val live: ZLayer[Any, Nothing, JsonDocumentCleaner] =
     ZLayer {
       ZIO.succeed(JsonDocumentCleaner())
     }

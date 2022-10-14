@@ -8,6 +8,7 @@ import zio.ZEnvironment
 import model.domain._
 import zio.{ Scope, UIO }
 import service.json.JsonSchemaValidator
+import infra.json.JacksonValidorClient
 import infra.json.Layers
 import com.github.fge.jackson.JacksonUtils
 import java.io.IOException
@@ -20,9 +21,8 @@ object JsonSchemaValidatorSuite {
       testSuccess,
       testFailure
     ).provide(
-      Layers.jsonValidator,
-      Layers.jsonValidatorClient,
-      JsonSchemaValidator.layer,
+      JacksonValidorClient.live,
+      JsonSchemaValidator.live,
       Scope.default
     )
 

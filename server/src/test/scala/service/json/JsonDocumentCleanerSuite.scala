@@ -12,7 +12,7 @@ object JsonDocumentCleanerSuite {
       testCleanDocument,
       testCleanDocumentIdempotent,
       testCleanNestedDocument
-    ).provide(JsonDocumentCleaner.layer)
+    ).provide(JsonDocumentCleaner.live)
 
   def testCleanDocumentIdempotent =
     test("clean document without nothing to clean") {
