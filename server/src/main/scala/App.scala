@@ -7,10 +7,10 @@ object App extends ZIOAppDefault {
 
   override val run = app
     .catchAll { e => ZIO.logError(s"App Stopped: ${e.getMessage}") }
-    .provide(Layers.logger)
+    .provide(Layers.logger, HttpServerConfig.live)
 
-  private def app: Task[Unit] =
-    (for {
+  private def app: RIO[HttpServerConfig, Unit] =
+    for {
       _    <- ZIO.logInfo("App Started")
       conf <- ZIO.service[HttpServerConfig]
       hostname = conf.hostname
@@ -20,6 +20,6 @@ object App extends ZIOAppDefault {
       )
       _ <- HttpServer.run(hostname, port)
       _ <- ZIO.never
-    } yield ()).provide(HttpServerConfig.live)
+    } yield ()
 
 }
