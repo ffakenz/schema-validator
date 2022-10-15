@@ -14,9 +14,15 @@ object Settings extends CommonScalac {
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
   )
 
-  lazy val scalafixSettings: Seq[Setting[_]] = Seq(
+  lazy val scalafixSettings = Seq(
     addCompilerPlugin(scalafixSemanticdb),
     semanticdbEnabled := true,
     scalafixOnCompile := true
+  )
+
+  lazy val dockerSettings = Seq(
+    dockerBaseImage      := "azul/zulu-openjdk:17",
+    Docker / version     := "latest",
+    Docker / packageName := "ffakenz/schema-validator"
   )
 }

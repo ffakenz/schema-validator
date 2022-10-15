@@ -1,0 +1,7 @@
+version: '3'
+services:
+  schema-validator:
+    image: ffakenz/schema-validator
+    container_name: schema-validator
+    ports:
+      - 9090:9090

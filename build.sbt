@@ -22,16 +22,20 @@ lazy val api = project
   .settings(scalafixSettings)
   .enablePlugins(ScalafixPlugin, BuildInfoPlugin)
 
+import com.typesafe.sbt.packager.docker._
+
 lazy val server = project
   .settings(
     name := "server"
   )
   .settings(commonSettings, scalafixSettings)
+  .enablePlugins(ScalafixPlugin, BuildInfoPlugin)
   .settings(
     libraryDependencies ++= Seq(
       Dependencies.JsonSchemaValidator.all,
       Dependencies.Logback.all
     ).flatten
   )
-  .enablePlugins(ScalafixPlugin, BuildInfoPlugin)
+  .settings(dockerSettings, Docker / daemonUser := "daemon")
+  .enablePlugins(DockerPlugin, AshScriptPlugin)
   .dependsOn(api)

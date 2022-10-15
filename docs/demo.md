@@ -13,7 +13,7 @@ To check that it really fits the Schema:
 
   1. The user should upload the JSON Schema:
   ```shell
-  $ curl http://localhost:8080/schema/schema-id -X POST -d @config-schema.json
+  $ curl http://0.0.0.0:9090/schema/schema-id -X POST -d @config-schema.json
   ```
 
   2. The server should respond with status code 201 and:
@@ -23,7 +23,7 @@ To check that it really fits the Schema:
 
   3. The user should upload the JSON Document to validate it:
   ```shell
-  $ curl http://localhost:8080/validate/schema-id -X POST -d @config.json
+  $ curl http://0.0.0.0:9090/validate/schema-id -X POST -d @config.json
   ```
 
   4. The server should "clean" the uploaded JSON Document to remove keys for which the value is `null`

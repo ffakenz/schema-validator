@@ -36,4 +36,11 @@ You can start the server using:
 $ sbt "server/run"
 ```
 
-Now, give the [demo](./docs/demo.md) a try!
+## Run the server using docker
+You can publish the docker image of the server  using `docker:publishLocal` command on the SBT console. Once the image is successfully publish, simply run the server using the [docker-compose.yaml](./docker/docker-compose.yml)
+```sh
+$ .docker-compose run schema-validator
+```
+
+## Demo
+Give the [demo](./docs/demo.md) a test drive!

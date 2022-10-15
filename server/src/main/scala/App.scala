@@ -16,7 +16,7 @@ object App extends ZIOAppDefault {
       hostname = conf.hostname
       port     = conf.port
       _ <- ZIO.logInfo(
-        s"Starting server to listen on port: http://$hostname:$port/api/health"
+        s"Starting server to listen on port: http://$hostname:$port/ready"
       )
       _ <- HttpServer.run(hostname, port)
       _ <- ZIO.never
