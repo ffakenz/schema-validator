@@ -1,6 +1,7 @@
 import app.HttpServer
 import infra.json.Layers
 import zio._
+import app.HttpServerConfig
 
 object App extends ZIOAppDefault {
 
@@ -9,14 +10,16 @@ object App extends ZIOAppDefault {
     .provide(Layers.logger)
 
   private def app: Task[Unit] =
-    for {
-      _ <- ZIO.logInfo("App Started")
-      hostname = "localhost"
-      port     = 8080
+    (for {
+      _    <- ZIO.logInfo("App Started")
+      conf <- ZIO.service[HttpServerConfig]
+      hostname = conf.hostname
+      port     = conf.port
       _ <- ZIO.logInfo(
         s"Starting server to listen on port: http://$hostname:$port/api/health"
       )
       _ <- HttpServer.run(hostname, port)
       _ <- ZIO.never
-    } yield ()
+    } yield ()).provide(HttpServerConfig.live)
+
 }
