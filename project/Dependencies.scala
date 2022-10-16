@@ -10,19 +10,24 @@ object Dependencies {
     val zioHttp             = "2.0.0-RC10"
     val jsonSchemaValidator = "2.2.14"
     val logback             = "1.4.4"
+    val tapir               = "1.1.2"
   }
 
   object Zio {
-    val zio             = "dev.zio" %% "zio"                 % Versions.zio
-    val zioTest         = "dev.zio" %% "zio-test"            % Versions.zioTest % Test
-    val zioTestSbt      = "dev.zio" %% "zio-test-sbt"        % Versions.zioTest % Test
-    val zioTestMagnolia = "dev.zio" %% "zio-test-magnolia"   % Versions.zioTest % Test
-    val zioConfig       = "dev.zio" %% "zio-config"          % Versions.zioConfig
-    val zioTypesafe     = "dev.zio" %% "zio-config-typesafe" % Versions.zioConfig
-    val zioLogging      = "dev.zio" %% "zio-logging"         % Versions.zioLogging
-    val zioLoggingSlf4j = "dev.zio" %% "zio-logging-slf4j"   % Versions.zioLogging
-    val zioJson         = "dev.zio" %% "zio-json"            % Versions.zioJson
-    val zioHttp         = "io.d11"  %% "zhttp"               % Versions.zioHttp
+    val zio             = "dev.zio"                     %% "zio"                     % Versions.zio
+    val zioTest         = "dev.zio"                     %% "zio-test"                % Versions.zioTest % Test
+    val zioTestSbt      = "dev.zio"                     %% "zio-test-sbt"            % Versions.zioTest % Test
+    val zioTestMagnolia = "dev.zio"                     %% "zio-test-magnolia"       % Versions.zioTest % Test
+    val zioConfig       = "dev.zio"                     %% "zio-config"              % Versions.zioConfig
+    val zioTypesafe     = "dev.zio"                     %% "zio-config-typesafe"     % Versions.zioConfig
+    val zioLogging      = "dev.zio"                     %% "zio-logging"             % Versions.zioLogging
+    val zioLoggingSlf4j = "dev.zio"                     %% "zio-logging-slf4j"       % Versions.zioLogging
+    val zioJson         = "dev.zio"                     %% "zio-json"                % Versions.zioJson
+    val zioHttp         = "io.d11"                      %% "zhttp"                   % Versions.zioHttp
+    val tapirZio        = "com.softwaremill.sttp.tapir" %% "tapir-zio"               % Versions.tapir
+    val tapirZioHttp    = "com.softwaremill.sttp.tapir" %% "tapir-zio-http-server"   % Versions.tapir
+    val tapirZioJson    = "com.softwaremill.sttp.tapir" %% "tapir-json-zio"          % Versions.tapir
+    val tapirZioSwagger = "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % Versions.tapir
 
     val all = Seq(
       zio,
@@ -35,9 +40,10 @@ object Dependencies {
       zioLoggingSlf4j,
       zioJson,
       zioHttp,
-      "com.softwaremill.sttp.tapir" %% "tapir-zio"             % "1.1.2",
-      "com.softwaremill.sttp.tapir" %% "tapir-zio-http-server" % "1.1.2",
-      "com.softwaremill.sttp.tapir" %% "tapir-json-zio"        % "1.1.2"
+      tapirZio,
+      tapirZioHttp,
+      tapirZioJson,
+      tapirZioSwagger
     )
   }
 
