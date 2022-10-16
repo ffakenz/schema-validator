@@ -13,6 +13,7 @@ case class JacksonValidorClient(
     validator: JsonValidator
 ) {
 
+  // @TODO : Task[Unit] and ZIO.fail with custom ProcessingException
   def validate(
       schema: JsonNode,
       instance: JsonNode,
@@ -30,16 +31,16 @@ case class JacksonValidorClient(
         .flatMap { report =>
           if (report.isSuccess)
             Right(())
-          else
-            Left(
-              report.asScala
-                .map { msg =>
-                  handleException(msg.asException())
-                }
-                .zipWithIndex
-                .map { case (s, i) => s""" [$i]: $s """ }
-                .mkString("[", "||", "]")
-            )
+          else {
+            val errorMsg = report.asScala
+              .map { msg =>
+                handleException(msg.asException())
+              }
+              .zipWithIndex
+              .map { case (s, i) => s""" [$i]: $s """ }
+              .mkString("[", "||", "]")
+            Left(errorMsg)
+          }
         }
     )
 

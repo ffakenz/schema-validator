@@ -22,7 +22,7 @@ case class SchemaF[A](
       maybeSchema <- registry.download(uri)
       schema <- maybeSchema match {
         case Some(s) => ZIO.succeed(s)
-        case None    => ZIO.fail(new NoSuchElementException(s"schema not found"))
+        case None    => ZIO.fail(new NoSuchElementException(s"Schema not found"))
       }
       cleanDoc <- cleaner.clean(doc)
       result   <- validator.validate(cleanDoc, schema)

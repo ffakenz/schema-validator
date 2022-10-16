@@ -24,6 +24,9 @@ object ServiceResponse {
 
     implicit val encoder: JsonEncoder[SuccessResponse] =
       DeriveJsonEncoder.gen[SuccessResponse]
+
+    implicit val decoder: JsonDecoder[SuccessResponse] =
+      DeriveJsonDecoder.gen[SuccessResponse]
   }
 
   case class ErrorResponse(
@@ -42,6 +45,11 @@ object ServiceResponse {
 
     implicit val encoder: JsonEncoder[ErrorResponse] =
       DeriveJsonEncoder.gen[ErrorResponse]
+
+    implicit val decoder: JsonDecoder[ErrorResponse] =
+      DeriveJsonDecoder.gen[ErrorResponse]
   }
 
+  implicit val encoder: JsonEncoder[ServiceResponse] =
+    DeriveJsonEncoder.gen[ServiceResponse]
 }

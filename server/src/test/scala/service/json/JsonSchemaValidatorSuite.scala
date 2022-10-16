@@ -13,6 +13,7 @@ import infra.json.Layers
 import com.github.fge.jackson.JacksonUtils
 import java.io.IOException
 import scala.io.{ Source, BufferedSource }
+import utils.FileUtils.acquire
 
 object JsonSchemaValidatorSuite {
 
@@ -75,9 +76,4 @@ object JsonSchemaValidatorSuite {
         } yield assertTrue(result == Left(error))
       }
     }
-
-  def acquire(name: => String): ZIO[Any with Scope, IOException, BufferedSource] =
-    ZIO.acquireRelease(
-      ZIO.attemptBlockingIO(Source.fromFile(name))
-    )(source => ZIO.attempt(source.close()).ignore)
 }

@@ -7,7 +7,7 @@ object Dependencies {
     val zioConfig           = "3.0.1"
     val zioLogging          = "2.1.2"
     val zioJson             = "0.3.0"
-    val zioHttp             = "2.0.0-RC11"
+    val zioHttp             = "2.0.0-RC10"
     val jsonSchemaValidator = "2.2.14"
     val logback             = "1.4.4"
   }
@@ -34,7 +34,10 @@ object Dependencies {
       zioLogging,
       zioLoggingSlf4j,
       zioJson,
-      zioHttp
+      zioHttp,
+      "com.softwaremill.sttp.tapir" %% "tapir-zio"             % "1.1.2",
+      "com.softwaremill.sttp.tapir" %% "tapir-zio-http-server" % "1.1.2",
+      "com.softwaremill.sttp.tapir" %% "tapir-json-zio"        % "1.1.2"
     )
   }
 
