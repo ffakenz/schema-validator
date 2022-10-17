@@ -1,6 +1,7 @@
 package app
 
 import zhttp.service.Server
+import app.Routes
 
 object HttpServer {
 
@@ -15,7 +16,7 @@ object HttpServer {
       )
       .fork
 
-  private def routes() = app.json.Routes() ++ HealthRoutes()
+  private def routes() = Routes()
 
   private def serverSetup(hostname: String, port: Int) =
     Server.bind(hostname, port) ++
