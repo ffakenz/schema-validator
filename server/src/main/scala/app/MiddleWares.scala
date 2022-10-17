@@ -5,6 +5,7 @@ import zhttp.http.middleware.HttpMiddleware
 import zio.ZIO
 
 import java.io.IOException
+import zhttp.http.middleware.Cors
 
 object MiddleWares {
 
@@ -22,6 +23,12 @@ object MiddleWares {
       }
   }
 
+  private val config: Cors.CorsConfig =
+    Cors.CorsConfig(
+      allowedOrigins = _ => true,
+      allowedMethods = Some(Set(Method.GET, Method.POST))
+    )
+
   def apply(): Middleware[Any, Throwable, Request, Response, Request, Response] =
-    errorMiddleware ++ Middleware.dropTrailingSlash
+    errorMiddleware ++ Middleware.dropTrailingSlash ++ Middleware.cors(config)
 }
