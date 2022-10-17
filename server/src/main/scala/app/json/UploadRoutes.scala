@@ -50,7 +50,9 @@ object UploadRoutes {
 
   private val uploadEndpoint = {
     endpoint
-      .name("Upload a JSON Schema with unique `SCHEMAID`")
+      .tag("Schema")
+      .description("Upload a JSON Schema with unique `SCHEMAID`")
+      .summary("Upload a Schema")
       .post
       .in("schema")
       .in(path[String]("schemaId").default("schema-id"))

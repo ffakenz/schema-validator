@@ -13,7 +13,8 @@ object HealthRoutes {
 
   private val healthEndpoint =
     endpoint
-      .name("Service health status")
+      .tag("Health")
+      .description("Service health status")
       .get
       .in("health")
       .in(emptyInput)

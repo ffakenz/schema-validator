@@ -27,7 +27,9 @@ object ValidateRoutes {
 
   private val validateEndpoint =
     endpoint
-      .name("Validate a JSON document against the JSON Schema identified by `SCHEMAID`")
+      .tag("Document")
+      .description("Validate a JSON document against the JSON Schema identified by `SCHEMAID`")
+      .summary("Validate a Documents against a Schema")
       .post
       .in("validate")
       .in(path[String]("schemaId").default("schema-id"))

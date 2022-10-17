@@ -11,7 +11,9 @@ object DownloadRoutes {
 
   private val downloadEndpoint =
     endpoint
-      .name("Download a JSON Schema with unique `SCHEMAID`")
+      .tag("Schema")
+      .description("Download a JSON Schema with unique `SCHEMAID`")
+      .summary("Download a Schema")
       .get
       .in("schema")
       .in(path[String]("schemaId").default("schema-id"))
