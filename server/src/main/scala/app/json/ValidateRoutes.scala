@@ -2,6 +2,7 @@ package app.json
 
 import algebra.SchemaF
 import app.ServiceResponse._
+import com.fasterxml.jackson.core.JsonParseException
 import com.github.fge.jackson.JacksonUtils
 import model.domain
 import sttp.tapir.json.zio._
@@ -47,11 +48,16 @@ object ValidateRoutes {
                 s"Error in action $actionName for schema $schemaId: ${e.getMessage}"
               ) *>
                 ZIO.succeed(Left(ErrorResponse(actionName, schemaId, e.getMessage)))
-            case e =>
+            case e: JsonParseException =>
               ZIO.logError(
                 s"Error in action $actionName for schema $schemaId: ${e.getMessage}"
               ) *>
                 ZIO.succeed(Left(ErrorResponse(actionName, schemaId, "Invalid JSON")))
+            case e =>
+              ZIO.logError(
+                s"Error in action $actionName for schema $schemaId: ${e.getMessage}"
+              ) *>
+                ZIO.succeed(Left(ErrorResponse(actionName, schemaId, e.getMessage)))
           }
       result
     }
