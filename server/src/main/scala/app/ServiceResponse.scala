@@ -2,26 +2,15 @@ package app
 
 import zio.json._
 
-sealed trait ServiceResponse {
-  def action: String
-  def id: String
-  def status: String
-}
-
 object ServiceResponse {
 
   case class SuccessResponse(
       action: String,
       id: String,
-      status: String
-  ) extends ServiceResponse
+      status: String = "success"
+  )
 
   object SuccessResponse {
-    def apply(
-        action: String,
-        id: String
-    ): SuccessResponse = SuccessResponse(action, id, "success")
-
     implicit val encoder: JsonEncoder[SuccessResponse] =
       DeriveJsonEncoder.gen[SuccessResponse]
 
@@ -29,19 +18,58 @@ object ServiceResponse {
       DeriveJsonDecoder.gen[SuccessResponse]
   }
 
-  case class ErrorResponse(
-      action: String,
-      id: String,
-      status: String,
-      message: String
-  ) extends ServiceResponse
+  sealed trait ErrorResponse {
+    def action: String
+    def id: String
+    def status: String
+    def message: String
+  }
 
   object ErrorResponse {
-    def apply(
+    case class OkErrorResponse(
         action: String,
         id: String,
+        status: String = "error",
         message: String
-    ): ErrorResponse = ErrorResponse(action, id, "error", message)
+    ) extends ErrorResponse
+
+    object OkErrorResponse {
+      implicit val encoder: JsonEncoder[OkErrorResponse] =
+        DeriveJsonEncoder.gen[OkErrorResponse]
+
+      implicit val decoder: JsonDecoder[OkErrorResponse] =
+        DeriveJsonDecoder.gen[OkErrorResponse]
+    }
+
+    case class BadRequestErrorResponse(
+        action: String,
+        id: String,
+        status: String = "error",
+        message: String
+    ) extends ErrorResponse
+
+    object BadRequestErrorResponse {
+      implicit val encoder: JsonEncoder[BadRequestErrorResponse] =
+        DeriveJsonEncoder.gen[BadRequestErrorResponse]
+
+      implicit val decoder: JsonDecoder[BadRequestErrorResponse] =
+        DeriveJsonDecoder.gen[BadRequestErrorResponse]
+    }
+
+    case class InternalErrorResponse(
+        action: String,
+        id: String,
+        status: String = "error",
+        message: String
+    ) extends ErrorResponse
+
+    object InternalErrorResponse {
+      implicit val encoder: JsonEncoder[InternalErrorResponse] =
+        DeriveJsonEncoder.gen[InternalErrorResponse]
+
+      implicit val decoder: JsonDecoder[InternalErrorResponse] =
+        DeriveJsonDecoder.gen[InternalErrorResponse]
+    }
 
     implicit val encoder: JsonEncoder[ErrorResponse] =
       DeriveJsonEncoder.gen[ErrorResponse]
@@ -49,7 +77,4 @@ object ServiceResponse {
     implicit val decoder: JsonDecoder[ErrorResponse] =
       DeriveJsonDecoder.gen[ErrorResponse]
   }
-
-  implicit val encoder: JsonEncoder[ServiceResponse] =
-    DeriveJsonEncoder.gen[ServiceResponse]
 }

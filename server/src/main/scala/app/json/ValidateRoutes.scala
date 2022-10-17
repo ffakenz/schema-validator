@@ -1,6 +1,7 @@
 package app.json
 
 import algebra.SchemaF
+import app.ServiceResponse.ErrorResponse._
 import app.ServiceResponse._
 import com.fasterxml.jackson.core.JsonParseException
 import com.github.fge.jackson.JacksonUtils
@@ -19,7 +20,7 @@ object ValidateRoutes {
       |  "source": "/home/alice/image.iso",
       |  "destination": "/mnt/storage",
       |  "chunks": {
-      |    "size": 1024,
+      |    "size": 1024
       |  }
       |}
       |""".stripMargin
@@ -33,7 +34,13 @@ object ValidateRoutes {
       .in(stringJsonBody.example(inputExample))
       .out(jsonBody[SuccessResponse])
       .out(statusCode(StatusCode.Ok))
-      .errorOut(jsonBody[ErrorResponse] and statusCode(StatusCode.BadRequest))
+      .errorOut(
+        oneOf[ErrorResponse](
+          oneOfVariant(jsonBody[OkErrorResponse] and statusCode(StatusCode.Ok)),
+          oneOfVariant(jsonBody[BadRequestErrorResponse] and statusCode(StatusCode.BadRequest)),
+          oneOfVariant(jsonBody[InternalErrorResponse] and statusCode(StatusCode.InternalServerError))
+        )
+      )
 
   val validateServerEndpoint = {
     val actionName = "validate"
@@ -48,7 +55,7 @@ object ValidateRoutes {
               ZIO.logError(
                 s"Error in action $actionName for schema $schemaId: $error"
               ) *>
-                ZIO.succeed(Left(ErrorResponse(actionName, schemaId, error)))
+                ZIO.succeed(Left(OkErrorResponse(actionName, schemaId, message = error)))
             case Right(_) =>
               ZIO.succeed(Right(SuccessResponse(actionName, schemaId)))
           }
@@ -57,17 +64,17 @@ object ValidateRoutes {
               ZIO.logError(
                 s"Error in action $actionName for schema $schemaId: ${e.getMessage}"
               ) *>
-                ZIO.succeed(Left(ErrorResponse(actionName, schemaId, e.getMessage)))
+                ZIO.succeed(Left(OkErrorResponse(actionName, schemaId, message = e.getMessage)))
             case e: JsonParseException =>
               ZIO.logError(
                 s"Error in action $actionName for schema $schemaId: ${e.getMessage}"
               ) *>
-                ZIO.succeed(Left(ErrorResponse(actionName, schemaId, "Invalid JSON")))
+                ZIO.succeed(Left(BadRequestErrorResponse(actionName, schemaId, message = "Invalid JSON")))
             case e =>
               ZIO.logError(
                 s"Error in action $actionName for schema $schemaId: ${e.getMessage}"
               ) *>
-                ZIO.succeed(Left(ErrorResponse(actionName, schemaId, e.getMessage)))
+                ZIO.succeed(Left(InternalErrorResponse(actionName, schemaId, message = e.getMessage)))
           }
       result
     }

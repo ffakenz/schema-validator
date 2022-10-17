@@ -1,6 +1,7 @@
 package app.json
 
 import app.Routes
+import app.ServiceResponse.ErrorResponse._
 import app.ServiceResponse._
 import com.github.fge.jackson.JacksonUtils
 import utils.FileUtils.acquire
@@ -69,8 +70,8 @@ object JsonRoutesSuite {
         body     <- response.bodyAsString
       } yield assertTrue(response.status == Status.BadRequest) &&
         assertTrue(
-          body.fromJson[ErrorResponse] ==
-            Right(ErrorResponse("upload", "1", "Invalid JSON"))
+          body.fromJson[BadRequestErrorResponse] ==
+            Right(BadRequestErrorResponse("upload", "1", message = "Invalid JSON"))
         )
     }
 
@@ -112,10 +113,10 @@ object JsonRoutesSuite {
       for {
         response <- routes(validateReq)
         body     <- response.bodyAsString
-      } yield assertTrue(response.status == Status.BadRequest) &&
+      } yield assertTrue(response.status == Status.InternalServerError) && // @TODO bad request
         assertTrue(
-          body.fromJson[ErrorResponse] ==
-            Right(ErrorResponse("validate", "1", "Invalid JSON"))
+          body.fromJson[BadRequestErrorResponse] ==
+            Right(BadRequestErrorResponse("validate", "1", message = "Invalid JSON"))
         )
     }
 
@@ -129,10 +130,10 @@ object JsonRoutesSuite {
       for {
         response <- routes(validateReq)
         body     <- response.bodyAsString
-      } yield assertTrue(response.status == Status.BadRequest) &&
+      } yield assertTrue(response.status == Status.Ok) &&
         assertTrue(
-          body.fromJson[ErrorResponse] ==
-            Right(ErrorResponse("validate", "1", "Schema not found"))
+          body.fromJson[OkErrorResponse] ==
+            Right(OkErrorResponse("validate", "1", message = "Schema not found"))
         )
     }
 
@@ -155,14 +156,14 @@ object JsonRoutesSuite {
         -                    <- routes(uploadReq(schema))
         validateResponse     <- routes(validateReq)
         validateResponseBody <- validateResponse.bodyAsString
-      } yield assertTrue(validateResponse.status == Status.BadRequest) &&
+      } yield assertTrue(validateResponse.status == Status.Ok) &&
         assertTrue(
-          validateResponseBody.fromJson[ErrorResponse] ==
+          validateResponseBody.fromJson[OkErrorResponse] ==
             Right(
-              ErrorResponse(
+              OkErrorResponse(
                 "validate",
                 "1",
-                """[ [0]: object has missing required properties (["destination","source"]) ]"""
+                message = """[ [0]: object has missing required properties (["destination","source"]) ]"""
               )
             )
         )

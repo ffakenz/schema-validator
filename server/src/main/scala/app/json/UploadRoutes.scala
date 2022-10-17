@@ -1,6 +1,7 @@
 package app.json
 
 import algebra.SchemaF
+import app.ServiceResponse.ErrorResponse._
 import app.ServiceResponse._
 import com.fasterxml.jackson.core.JsonParseException
 import com.github.fge.jackson.JacksonUtils
@@ -56,7 +57,13 @@ object UploadRoutes {
       .in(stringJsonBody.example(inputExample))
       .out(jsonBody[SuccessResponse])
       .out(statusCode(StatusCode.Created))
-      .errorOut(jsonBody[ErrorResponse] and statusCode(StatusCode.BadRequest))
+      .errorOut(
+        oneOf[ErrorResponse](
+          oneOfVariant(jsonBody[OkErrorResponse] and statusCode(StatusCode.Ok)),
+          oneOfVariant(jsonBody[BadRequestErrorResponse] and statusCode(StatusCode.BadRequest)),
+          oneOfVariant(jsonBody[InternalErrorResponse] and statusCode(StatusCode.InternalServerError))
+        )
+      )
   }
 
   val uploadServerEndpoint = {
@@ -68,22 +75,22 @@ object UploadRoutes {
       val result: ZIO[SchemaF[JSON], Throwable, Either[ErrorResponse, SuccessResponse]] =
         action
           .map { _ => Right(SuccessResponse(actionName, schemaId)) }
-          .catchSome {
+          .catchAll {
             case e: IllegalArgumentException =>
               ZIO.logError(
                 s"Error in action $actionName for schema $schemaId: ${e.getMessage}"
               ) *>
-                ZIO.succeed(Left(ErrorResponse(actionName, schemaId, e.getMessage)))
+                ZIO.succeed(Left(BadRequestErrorResponse(actionName, schemaId, message = e.getMessage)))
             case e: JsonParseException =>
               ZIO.logError(
                 s"Error in action $actionName for schema $schemaId: ${e.getMessage}"
               ) *>
-                ZIO.succeed(Left(ErrorResponse(actionName, schemaId, "Invalid JSON")))
+                ZIO.succeed(Left(BadRequestErrorResponse(actionName, schemaId, message = "Invalid JSON")))
             case e =>
               ZIO.logError(
                 s"Error in action $actionName for schema $schemaId: ${e.getMessage}"
               ) *>
-                ZIO.succeed(Left(ErrorResponse(actionName, schemaId, e.getMessage)))
+                ZIO.succeed(Left(InternalErrorResponse(actionName, schemaId, message = e.getMessage)))
           }
       result
     }

@@ -4,7 +4,6 @@ import sbt._
 import scalafix.sbt.ScalafixPlugin.autoImport._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
-import com.typesafe.sbt.packager.docker._
 
 object Settings extends CommonScalac {
   lazy val commonSettings = Seq(

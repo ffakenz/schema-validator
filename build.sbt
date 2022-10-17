@@ -22,8 +22,6 @@ lazy val api = project
   .settings(scalafixSettings)
   .enablePlugins(ScalafixPlugin, BuildInfoPlugin)
 
-import com.typesafe.sbt.packager.docker._
-
 lazy val server = project
   .settings(
     name := "server"
