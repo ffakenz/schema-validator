@@ -1,8 +1,9 @@
 package utils
 
-import zio.{ ZIO, Scope }
-import scala.io.{ Source, BufferedSource }
+import zio.{ Scope, ZIO }
+
 import java.io.IOException
+import scala.io.{ BufferedSource, Source }
 
 object FileUtils {
 

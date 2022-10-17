@@ -1,19 +1,11 @@
 package service.json
 
-import zio.{ ZIO, Ref }
-import zio.test.{ test, _ }
-import model.json._
-import zio.ZLayer
-import zio.ZEnvironment
-import model.domain._
-import zio.{ Scope, UIO }
-import service.json.JsonSchemaValidator
-import infra.json.JacksonValidorClient
-import infra.json.Layers
 import com.github.fge.jackson.JacksonUtils
-import java.io.IOException
-import scala.io.{ Source, BufferedSource }
+import infra.json.JacksonValidorClient
+import model.json._
 import utils.FileUtils.acquire
+import zio.{ Scope, ZIO }
+import zio.test.{ test, _ }
 
 object JsonSchemaValidatorSuite {
 

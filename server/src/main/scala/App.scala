@@ -1,7 +1,6 @@
-import app.HttpServer
+import app.{ HttpServer, HttpServerConfig }
 import infra.json.Layers
 import zio._
-import app.HttpServerConfig
 
 object App extends ZIOAppDefault {
 
@@ -16,7 +15,7 @@ object App extends ZIOAppDefault {
       hostname = conf.hostname
       port     = conf.port
       _ <- ZIO.logInfo(
-        s"Starting server to listen on port: http://$hostname:$port/ready"
+        s"Starting server to listen on port: http://$hostname:$port/health"
       )
       _ <- HttpServer.run(hostname, port)
       _ <- ZIO.never

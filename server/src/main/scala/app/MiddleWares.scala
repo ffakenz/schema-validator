@@ -1,7 +1,7 @@
 package app
 
-import zhttp.http.middleware.HttpMiddleware
 import zhttp.http._
+import zhttp.http.middleware.HttpMiddleware
 import zio.ZIO
 
 import java.io.IOException

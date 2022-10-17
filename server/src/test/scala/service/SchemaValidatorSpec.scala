@@ -1,6 +1,6 @@
 package service
 
-import zio.test.{ test, _ }
+import zio.test._
 
 object SchemaValidatorSpec extends ZIOSpecDefault {
   def spec =

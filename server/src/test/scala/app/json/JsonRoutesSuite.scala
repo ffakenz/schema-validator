@@ -1,25 +1,13 @@
 package app.json
 
-import model.json._
-import zio.ZIO
-import zio.test.{ test, _ }
-
-import zhttp.http.{ HttpData, Request, Method, URL, Status, !!, / }
-import zio.ZLayer
-import zio.test.Assertion.equalTo
-import algebra.SchemaF
-import infra.json.JsonSchemaRegistry
-import service.json.JsonDocumentCleaner
-import infra.json.JacksonValidorClient
-import service.json.JsonSchemaValidator
-import zio.Scope
 import app.HealthRoutes
 import app.ServiceResponse._
-import zio.json._
-import scala.io.{ Source, BufferedSource }
-import java.io.IOException
 import com.github.fge.jackson.JacksonUtils
 import utils.FileUtils.acquire
+import zhttp.http._
+import zio.Scope
+import zio.json._
+import zio.test.{ test, _ }
 
 object JsonRoutesSuite {
 

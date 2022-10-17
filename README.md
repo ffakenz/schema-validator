@@ -44,3 +44,8 @@ $ .docker-compose run schema-validator
 
 ## Demo
 Give the [demo](./docs/demo.md) a test drive!
+
+### API docs
+Generate OpenApi docs by calling the swagger endpoint at:
+    - `/docs/schema-validator.yaml`
+    - `/docs/health.yaml`

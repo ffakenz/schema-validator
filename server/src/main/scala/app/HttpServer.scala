@@ -15,7 +15,7 @@ object HttpServer {
       )
       .fork
 
-  private def routes() = HealthRoutes() ++ app.json.Routes()
+  private def routes() = app.json.Routes() ++ HealthRoutes()
 
   private def serverSetup(hostname: String, port: Int) =
     Server.bind(hostname, port) ++

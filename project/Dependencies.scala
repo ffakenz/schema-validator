@@ -27,7 +27,7 @@ object Dependencies {
     val tapirZio        = "com.softwaremill.sttp.tapir" %% "tapir-zio"               % Versions.tapir
     val tapirZioHttp    = "com.softwaremill.sttp.tapir" %% "tapir-zio-http-server"   % Versions.tapir
     val tapirZioJson    = "com.softwaremill.sttp.tapir" %% "tapir-json-zio"          % Versions.tapir
-    val tapirZioSwagger = "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % Versions.tapir
+    val tapirSwagger    = "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % Versions.tapir
 
     val all = Seq(
       zio,
@@ -43,7 +43,7 @@ object Dependencies {
       tapirZio,
       tapirZioHttp,
       tapirZioJson,
-      tapirZioSwagger
+      tapirSwagger
     )
   }
 
