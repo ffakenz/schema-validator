@@ -13,13 +13,47 @@ import zio.{ ZIO, _ }
 
 object UploadRoutes {
 
+  private val inputExample =
+    """
+      |{
+      |  "$schema": "http://json-schema.org/draft-04/schema#",
+      |  "type": "object",
+      |  "properties": {
+      |    "source": {
+      |      "type": "string"
+      |    },
+      |    "destination": {
+      |      "type": "string"
+      |    },
+      |    "timeout": {
+      |      "type": "integer",
+      |      "minimum": 0,
+      |      "maximum": 32767
+      |    },
+      |    "chunks": {
+      |      "type": "object",
+      |      "properties": {
+      |        "size": {
+      |          "type": "integer"
+      |        },
+      |        "number": {
+      |          "type": "integer"
+      |        }
+      |      },
+      |      "required": ["size"]
+      |    }
+      |  },
+      |  "required": ["source", "destination"]
+      |}
+      |""".stripMargin
+
   private val uploadEndpoint = {
     endpoint
       .name("Upload a JSON Schema with unique `SCHEMAID`")
       .post
       .in("schema")
-      .in(path[String]("schemaId"))
-      .in(stringJsonBody)
+      .in(path[String]("schemaId").default("schema-id"))
+      .in(stringJsonBody.example(inputExample))
       .out(jsonBody[SuccessResponse])
       .out(statusCode(StatusCode.Created))
       .errorOut(jsonBody[ErrorResponse] and statusCode(StatusCode.BadRequest))

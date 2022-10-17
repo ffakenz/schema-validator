@@ -14,7 +14,7 @@ object DownloadRoutes {
       .name("Download a JSON Schema with unique `SCHEMAID`")
       .get
       .in("schema")
-      .in(path[String]("schemaId"))
+      .in(path[String]("schemaId").default("schema-id"))
       .in(emptyInput)
       .out(stringJsonBody)
       .errorOut(emptyOutput and statusCode(StatusCode.NotFound))

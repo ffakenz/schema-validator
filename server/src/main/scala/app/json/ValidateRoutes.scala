@@ -13,13 +13,24 @@ import zio.{ ZIO, _ }
 
 object ValidateRoutes {
 
+  private val inputExample =
+    """
+      |{
+      |  "source": "/home/alice/image.iso",
+      |  "destination": "/mnt/storage",
+      |  "chunks": {
+      |    "size": 1024,
+      |  }
+      |}
+      |""".stripMargin
+
   private val validateEndpoint =
     endpoint
       .name("Validate a JSON document against the JSON Schema identified by `SCHEMAID`")
       .post
       .in("validate")
-      .in(path[String]("schemaId"))
-      .in(stringJsonBody)
+      .in(path[String]("schemaId").default("schema-id"))
+      .in(stringJsonBody.example(inputExample))
       .out(jsonBody[SuccessResponse])
       .out(statusCode(StatusCode.Ok))
       .errorOut(jsonBody[ErrorResponse] and statusCode(StatusCode.BadRequest))
