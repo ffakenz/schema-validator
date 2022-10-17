@@ -1,12 +1,11 @@
 import Settings._
 
 // Global Settings
-ThisBuild / scalaVersion    := "2.13.8"
+ThisBuild / scalaVersion    := "3.2.0"
 ThisBuild / organization    := "ffakenz"
 ThisBuild / versionScheme   := Some("early-semver")
 ThisBuild / conflictManager := ConflictManager.latestRevision
 ThisBuild / javacOptions ++= Seq("-source", "17", "-target", "17")
-ThisBuild / scalacOptions ++= Seq("-Ymacro-annotations", "-target:jvm-17")
 
 lazy val root = (project in file("."))
   .settings(
@@ -19,8 +18,7 @@ lazy val api = project
   .settings(
     name := "api"
   )
-  .settings(scalafixSettings)
-  .enablePlugins(ScalafixPlugin, BuildInfoPlugin)
+  .enablePlugins(BuildInfoPlugin)
 
 import com.typesafe.sbt.packager.docker._
 
@@ -28,8 +26,8 @@ lazy val server = project
   .settings(
     name := "server"
   )
-  .settings(commonSettings, scalafixSettings)
-  .enablePlugins(ScalafixPlugin, BuildInfoPlugin)
+  .settings(commonSettings)
+  .enablePlugins(BuildInfoPlugin)
   .settings(
     libraryDependencies ++= Seq(
       Dependencies.JsonSchemaValidator.all,
