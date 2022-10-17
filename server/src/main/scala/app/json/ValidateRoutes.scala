@@ -4,13 +4,12 @@ import algebra.SchemaF
 import app.ServiceResponse._
 import com.fasterxml.jackson.core.JsonParseException
 import com.github.fge.jackson.JacksonUtils
-import model.domain
+import model.json.{ JSON, JsonDocument, SchemaId }
+import sttp.model.StatusCode
+import sttp.tapir.generic.auto._
 import sttp.tapir.json.zio._
 import sttp.tapir.ztapir._
-import model.json.{ JSON, JsonDocument, JsonSchema, SchemaId }
 import zio.{ ZIO, _ }
-import sttp.tapir.generic.auto._
-import sttp.model.StatusCode
 
 object ValidateRoutes {
 

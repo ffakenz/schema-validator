@@ -1,7 +1,6 @@
 package app
 
 import zhttp.service.Server
-import app.Routes
 
 object HttpServer {
 

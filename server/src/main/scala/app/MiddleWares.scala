@@ -5,7 +5,6 @@ import zhttp.http.middleware.HttpMiddleware
 import zio.ZIO
 
 import java.io.IOException
-import zhttp.http.middleware.Cors
 
 object MiddleWares {
 

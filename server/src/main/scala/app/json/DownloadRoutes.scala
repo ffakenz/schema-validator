@@ -1,15 +1,11 @@
 package app.json
 
 import algebra.SchemaF
-import app.ServiceResponse._
-import com.github.fge.jackson.JacksonUtils
 import model.domain
-import sttp.tapir.json.zio._
-import sttp.tapir.ztapir._
-import model.json.{ JSON, JsonDocument, JsonSchema, SchemaId }
-import zio.{ ZIO, _ }
-import sttp.tapir.generic.auto._
+import model.json.{ JSON, SchemaId }
 import sttp.model.StatusCode
+import sttp.tapir.ztapir._
+import zio.{ ZIO, _ }
 
 object DownloadRoutes {
 

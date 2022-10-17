@@ -1,15 +1,12 @@
 package app
 
-import zhttp.http.{ Http, Request, Response }
-import zio.{ ZIO, _ }
-import sttp.tapir.swagger.bundle.SwaggerInterpreter
-import sttp.tapir.server.ziohttp.ZioHttpInterpreter
 import algebra.SchemaF
-import model.json.JSON
-import sttp.tapir.swagger.SwaggerUIOptions
-import app.HealthRoutes
-import sttp.tapir.server.ServerEndpoint
 import app.json._
+import model.json.JSON
+import sttp.tapir.server.ziohttp.ZioHttpInterpreter
+import sttp.tapir.swagger.SwaggerUIOptions
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
+import zhttp.http.{ Http, Request, Response }
 
 object Routes {
 

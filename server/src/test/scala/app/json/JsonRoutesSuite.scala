@@ -1,5 +1,6 @@
 package app.json
 
+import app.Routes
 import app.ServiceResponse._
 import com.github.fge.jackson.JacksonUtils
 import utils.FileUtils.acquire
@@ -7,7 +8,6 @@ import zhttp.http._
 import zio.Scope
 import zio.json._
 import zio.test.{ test, _ }
-import app.Routes
 
 object JsonRoutesSuite {
 
