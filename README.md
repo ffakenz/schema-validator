@@ -45,22 +45,3 @@ $ .docker-compose run schema-validator
 
 ## Demo
 Give the [demo](./docs/demo.md) a test drive!
-
-## API docs
-Run the server and next, fire up swagger-ui by using using the [docker-compose.yaml](./docker/docker-compose.yml)
-```sh
-$ .docker-compose run swagger
-```
-It will automatically pick up and load the [openapi.yaml](./docker/openapi.yaml) file.
-Now you can give the demo a test drive using it.
-
-To check the OpenApi docs are valid and well formed you can to install and run [dredd](https://dredd.org/en/latest/) as following:
-```shell
-$ npm install -g dredd
-
-$ dredd openapi.yaml localhost:9090 --dry-run
-```
-
-> [wip] Generate OpenApi docs by calling the swagger endpoint at:
-> - `/docs/schema-validator.yaml`
-> - `/docs/health.yaml`

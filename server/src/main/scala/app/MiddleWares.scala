@@ -23,12 +23,6 @@ object MiddleWares {
       }
   }
 
-  private val config: Cors.CorsConfig =
-    Cors.CorsConfig(
-      allowedOrigins = _ => true,
-      allowedMethods = Some(Set(Method.GET, Method.POST))
-    )
-
   def apply(): Middleware[Any, Throwable, Request, Response, Request, Response] =
-    errorMiddleware ++ Middleware.dropTrailingSlash ++ Middleware.cors(config)
+    errorMiddleware
 }

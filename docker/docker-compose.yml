@@ -7,14 +7,3 @@ services:
     container_name: schema-validator
     ports:
       - 9090:9090
-
-  swagger:
-    image: swaggerapi/swagger-ui
-    container_name: swagger
-    ports:
-      - 8080:8080
-    volumes:
-      - $PWD:/usr/share/nginx/html/doc
-    environment:
-      API_URL: doc/openapi.yaml
-      URLS: "[{ url: 'doc/openapi.yaml', name: 'Schema Validator'}]"

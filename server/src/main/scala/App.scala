@@ -14,10 +14,9 @@ object App extends ZIOAppDefault {
       conf <- ZIO.service[HttpServerConfig]
       hostname = conf.hostname
       port     = conf.port
-      _ <- ZIO.logInfo(
-        s"Starting server to listen on port: http://$hostname:$port/health"
-      )
+      _ <- ZIO.logInfo(s"Starting server to listen on: http://$hostname:$port/")
       _ <- HttpServer.run(hostname, port)
+      _ <- ZIO.logInfo(s"Swagger-UI available at: http://$hostname:$port/docs")
       _ <- ZIO.never
     } yield ()
 
